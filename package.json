@@ -1,0 +1,77 @@
+{
+  "name": "energy-visualization-sankey",
+  "version": "1.0.1",
+  "description": "A modern TypeScript library for creating interactive Sankey diagrams that visualize energy flows from sources to consumption sectors.",
+  ,
+  "keywords": [
+    "sankey",
+    "energy",
+    "d3js",
+    "typescript",
+    "energy-visualization",
+    "data-visualization"
+  ],
+  "author": "Research Computing Center (RCC) at The University of Chicago",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/appdev-rcc/energy-visualization-sankey"
+  },
+  "bugs": {
+    "url": "https://github.com/appdev-rcc/energy-visualization-sankey/issues"
+  },
+  "homepage": "https://github.com/appdev-rcc/energy-visualization-sankey#readme",
+  "type": "module",
+  "main": "dist/sankey.umd.js",
+  "module": "dist/sankey.esm.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/sankey.esm.js",
+      "require": "./dist/sankey.umd.js"
+    },
+    "./styles": "./src/styles/sankey.css"
+  },
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "build:dev": "rollup -c",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:numerical": "jest tests/numerical-validation.test.js",
+    "test:visual": "node scripts/visual-validation-real-data.js",
+    "test:performance": "node scripts/performance-validation-real.js",
+    "test:ci": "jest --coverage --watchAll=false --passWithNoTests",
+    "validate:baseline": "npm run build && npm run serve & sleep 3 && npm run test:visual && npm run test:performance && kill %1",
+    "validate:quick": "npm run test:numerical",
+    "validate:full": "npm run test:numerical && npm run build && npm run serve & sleep 3 && npm run test:visual && npm run test:performance && kill %1",
+    "validate": "npm run validate:full",
+    "prepublishOnly": "npm run clean && npm run test:ci && npm run build"
+  }
+  "dependencies": {
+    "d3": "^7.8.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/d3": "^7.4.0",
+    "@types/jest": "^29.5.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdom": "^22.1.0",
+    "pixelmatch": "^5.3.0",
+    "playwright": "^1.40.0",
+    "pngjs": "^7.0.0",
+    "rollup": "^4.6.1",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.3.0"
+  }
+}
