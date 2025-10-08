@@ -73,14 +73,8 @@ npm install energy-visualization-sankey
 For quick prototyping or simple integration, use the standalone build that includes D3:
 
 ```html
-<!-- Standalone ES Module (recommended for modern browsers) -->
-<script type="module">
-    import Sankey from './dist/sankey.standalone.esm.js';
-    // Your code here
-</script>
-
 <!-- Standalone UMD (compatible with older browsers) -->
-<script src="./dist/sankey.standalone.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/energy-visualization-sankey@1.0.1/dist/sankey.standalone.esm.js"></script>
 <script>
     const sankey = new Sankey('container', options);
 </script>
@@ -93,7 +87,7 @@ If you already have D3 v7 in your project:
 ```html
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="./dist/sankey.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/energy-visualization-sankey@1.0.1/dist/sankey.umd.js"></script>
 ```
 
 ## Quick Start
@@ -150,7 +144,7 @@ const sankey = new Sankey('sankey-container', {
 <div id="sankey-container"></div>
 
 <script type="module">
-    import Sankey from './dist/sankey.standalone.esm.js';
+    import Sankey from 'https://cdn.jsdelivr.net/npm/energy-visualization-sankey@1.0.1/dist/sankey.standalone.esm.js';
     // Initialize as shown above
 </script>
 </body>
@@ -404,40 +398,6 @@ src/
 ├── utils/
 │   └── Logger.ts               # Logging utilities
 └── index.ts                    # Public API exports
-```
-
-## Examples
-
-### Working Examples
-
-See the `examples/` directory for complete working examples:
-
-- **examples/data-us.html** - US energy data visualization (1800-2021)
-- **examples/data-china.html** - China energy data visualization
-- **examples/visual-test.html** - Visual testing interface
-
-### Running Examples
-
-```bash
-npm run serve
-# Open http://localhost:8080/examples/data-us.html
-```
-
-### Custom Data Example
-
-```typescript
-// Load your own energy dataset
-fetch('./my-energy-data.json')
-    .then(response => response.json())
-    .then(energyData => {
-        const sankey = new Sankey('my-container', {
-            data: energyData,
-            country: "My Country",
-            includeControls: true,
-            animationSpeed: 150,
-            autoPlay: true
-        });
-    });
 ```
 
 ## Browser Support
