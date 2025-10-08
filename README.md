@@ -14,7 +14,6 @@ across historical energy data.
 - [Data Format](#data-format)
 - [Architecture](#architecture)
 - [Development](#development)
-- [Examples](#examples)
 - [Browser Support](#browser-support)
 - [Contributing](#contributing)
 - [License](#license)
@@ -423,7 +422,7 @@ src/
 ### Development Setup
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/appdev-rcc/energy-visualization-sankey.git`
+2. Clone your fork
 3. Install dependencies: `npm install`
 4. Create a feature branch: `git checkout -b feature/your-feature`
 5. Make your changes with tests

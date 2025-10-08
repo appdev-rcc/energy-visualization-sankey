@@ -43,7 +43,7 @@
     "test:numerical": "jest tests/numerical-validation.test.js",
     "test:visual": "node scripts/visual-validation-real-data.js",
     "test:performance": "node scripts/performance-validation-real.js",
-    "test:ci": "jest --coverage --watchAll=false --passWithNoTests",
+    "test:ci": "jest --watchAll=false --passWithNoTests",
     "validate:baseline": "npm run build && npm run serve & sleep 3 && npm run test:visual && npm run test:performance && kill %1",
     "validate:quick": "npm run test:numerical",
     "validate:full": "npm run test:numerical && npm run build && npm run serve & sleep 3 && npm run test:visual && npm run test:performance && kill %1",
