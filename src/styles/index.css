@@ -1,0 +1,7 @@
+/* Energy Visualization Sankey - Combined Styles */
+
+/* Import core Sankey diagram styles */
+@import './sankey.css';
+
+/* Import UI controls styles */
+@import './controls.css';

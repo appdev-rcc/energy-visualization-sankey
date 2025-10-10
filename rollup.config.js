@@ -1,6 +1,8 @@
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript2';
 import terser from '@rollup/plugin-terser';
+import postcss from 'rollup-plugin-postcss';
+import postcssImport from 'postcss-import';
 import ts from 'typescript';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -22,6 +24,25 @@ const baseConfig = {
             typescript: ts
         })
     ]
+};
+
+// CSS build configuration
+const cssConfig = {
+    input: 'src/styles/index.css',
+    plugins: [
+        postcss({
+            plugins: [
+                postcssImport()
+            ],
+            extract: 'styles.css',
+            minimize: true,
+            sourceMap: true
+        })
+    ],
+    output: {
+        file: 'dist/temp-unused.js', // This file won't be used since we're extracting CSS
+        format: 'es'
+    }
 };
 
 // ES Module build
@@ -127,5 +148,5 @@ const standaloneMinConfig = {
 
 // Export appropriate configs based on environment
 export default isDev
-    ? [esmConfig, umdConfig, standaloneEsmConfig, standaloneUmdConfig] // Include standalone versions for dev testing
-    : [esmConfig, umdConfig, umdMinConfig, standaloneEsmConfig, standaloneUmdConfig, standaloneMinConfig];
+    ? [cssConfig, esmConfig, umdConfig, standaloneEsmConfig, standaloneUmdConfig] // Include standalone versions for dev testing
+    : [cssConfig, esmConfig, umdConfig, umdMinConfig, standaloneEsmConfig, standaloneUmdConfig, standaloneMinConfig];
