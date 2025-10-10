@@ -515,8 +515,16 @@ export default class Sankey {
      */
     private injectHTML(): void {
         let html = `
-      <div class="us-energy-sankey-wrapper">
-        <div class="sankey" style="line-height: 0;"></div>
+        <div class="title_container">
+            <a href="https://www.rdcep.org/" target="_blank">
+                <img src="https://images.squarespace-cdn.com/content/v1/54dcfad0e4b0eaff5e0068bf/1446137765478-FX9WM00VV1LWAFUJRZBI/rdcep+sig2.png"
+                style="max-height: 50px;z-index: 999;"
+                alt="The Center for Robust Decision-making on Climate and Energy Policy (RDCEP)"
+                title="The Center for Robust Decision-making on Climate and Energy Policy (RDCEP)">
+            </a>
+        </div>
+        <div class="us-energy-sankey-wrapper">
+            <div class="sankey" style="line-height: 0;"></div>
     `;
 
         if (this.options.includeTimeline) {
@@ -568,13 +576,6 @@ export default class Sankey {
         }
 
         this.container.innerHTML = html;
-
-        // Add title container
-        if (!document.querySelector('.title_container')) {
-            const titleContainer = document.createElement('div');
-            titleContainer.className = 'title_container';
-            this.container.insertBefore(titleContainer, this.container.firstChild);
-        }
 
         // Set initial waste heat visibility state
         const sankeyContainer = this.container.querySelector('.sankey');
