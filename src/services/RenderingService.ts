@@ -64,77 +64,81 @@ export class RenderingService {
     }
 
     /**
-     * Draws the main title, subtitle, and affiliations in separate title container
+     * Draws the animated header elements (year and energy units) as separate SVG overlays
      */
     public drawHeader(): void {
-        // Use separate title container
-        const titleContainer = d3.select('.title_container')
-            .style('height', '58px');
 
-        const titleSvg = titleContainer
+        // Create Energy Usage Overlay in the title section
+        this.createEnergyUsageOverlay();
+
+        // Create Year Overlay in separate year section
+        this.createYearOverlay();
+    }
+
+    /**
+     * Creates the energy usage SVG overlay in the title section
+     */
+    private createEnergyUsageOverlay(): void {
+        const energyContainer = d3.select('.energy-usage-overlay');
+
+        const energySvg = energyContainer
             .append('svg')
-            .attr('id', 'title')
-            .attr('width', this.configService.WIDTH)
-            .attr('height', 58);
+            .attr('id', 'energy-usage-overlay')
+            .attr('class', 'energy-svg-overlay')
+            .style('position', 'absolute')
+            .style('top', '0')
+            .style('left', '25%')
+            .style('width', '100%')
+            .style('height', '25px')
+            .style('pointer-events', 'none')
+            .style('overflow', 'visible');
 
-        const country = this.configService.options.country
-
-        // Draw title of graph
-        const svg_title = titleSvg.append('text')
-            .text(`${country} energy usage`)
-            .attr('text-anchor', 'end')
-            .attr('x', this.configService.ELEC_BOX_X - 10)
-            .attr('y', '1.5em')
-            .attr('class', 'title');
-
-        // Draw units of graph (will be populated by animation)
-        svg_title.append('tspan')
+        // Draw energy usage units (will be populated by animation)
+        energySvg.append('text')
             .text('0 W/capita') // Will be updated by animation to show actual energy usage
-            .attr('text-anchor', 'end')
-            .attr('x', this.configService.ELEC_BOX_X - 13)
-            .attr('dy', '1.4em')
+            .attr('text-anchor', 'right')
+            .attr('x', 0)
+            .attr('y', 18)
             .attr('class', 'unit year-total animate title-bottom')
             .attr('data-incr', '0')
-            .attr('data-value', '0');
+            .attr('data-value', '0')
+            .style('font-size', '0.9em')
+            .style('font-weight', 'bold');
+    }
+
+    /**
+     * Creates the year SVG overlay in the year section
+     */
+    private createYearOverlay(): void {
+        const firstYear = this.dataService.firstYear!;
+
+        const yearContainer = d3.select('.year-overlay');
+
+        const yearSvg = yearContainer
+            .append('svg')
+            .attr('id', 'year-overlay')
+            .attr('class', 'year-svg-overlay')
+            .style('position', 'absolute')
+            .style('top', '0')
+            .style('left', '0')
+            .style('width', '100%')
+            .style('height', '100%')
+            .style('pointer-events', 'none')
+            .style('overflow', 'visible');
 
         // Draw year (will be populated by animation)
-        const firstYear = this.dataService.firstYear!;
-        const lastYear = this.dataService.lastYear!;
-        svg_title.append('tspan')
+        yearSvg.append('text')
             .text(firstYear.toString())
-            .attr('text-anchor', 'start')
-            .attr('x', this.configService.ELEC_BOX_X)
-            .attr('dy', '0em')
+            .attr('text-anchor', 'middle')
+            .attr('x', '50%')
+            .attr('y', '90%')
             .attr('class', 'year animate')
             .attr('data-incr', '0')
-            .attr('data-value', firstYear);
-
-        // Add subtitle
-        titleSvg.append('text')
-            .text(`Energy Transitions in ${country} History, ${firstYear}-${lastYear}`)
-            .attr('x', this.configService.ELEC_BOX_X + this.configService.BOX_WIDTH + 25)
-            .attr('y', '1.5em')
-            .attr('class', 'affiliation')
-            .append('tspan')
-            .text('Suits, Matteson, and Moyer (2020)')
-            .attr('class', 'affiliation-bottom')
-            .attr('x', this.configService.ELEC_BOX_X + this.configService.BOX_WIDTH + 25)
-            .attr('dy', '1.4em');
-
-        // Draw affiliations
-        const affiliationX = this.configService.ELEC_BOX_X + this.configService.BOX_WIDTH +
-            (this.configService.WIDTH - (this.configService.ELEC_BOX_X + this.configService.BOX_WIDTH)) / 2 + 50;
-
-        titleSvg.append('text')
-            .text('Center for Robust Decision-making on')
-            .attr('x', affiliationX)
-            .attr('y', '1.5em')
-            .attr('class', 'affiliation')
-            .append('tspan')
-            .text('Climate and Energy Policy, UChicago')
-            .attr('class', 'affiliation-bottom')
-            .attr('x', affiliationX)
-            .attr('dy', '1.4em');
+            .attr('data-value', firstYear)
+            .style('font-size', '3.1em')
+            .style('font-weight', 'bold')
+            .style('letter-spacing', '0.05em')
+            .style('font-variant-numeric', 'tabular-nums');
     }
 
     /**

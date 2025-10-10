@@ -9,6 +9,11 @@ text, tspan {
 /* Flow Styles */
 .flow {
     fill: none;
+    stroke-opacity: 0.8;
+}
+
+.flow:hover {
+    stroke-opacity: 0.9;
 }
 
 .flow.heat {
@@ -21,7 +26,7 @@ text, tspan {
 
 .flow.waste {
     stroke: #e49942;
-    opacity: 0.4;
+    opacity: 0.4 !important;
 }
 
 .flow.solar {
@@ -111,21 +116,142 @@ text, tspan {
     fill: #000000;
 }
 
-/* Title Container */
+/* Title Container - Responsive Header Layout */
 .title_container {
     border-top: 2px solid #000000;
     border-bottom: 1px solid #000000;
     position: relative;
+    min-height: 58px;
+    padding: 8px 16px;
+    background: white;
 }
 
-.title_container img {
-    max-height: 40px;
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+/* Logo Section */
+.header-logo {
+    flex: 0 0 auto;
+    min-width: 60px;
+}
+
+.header-logo img {
+    max-height: 42px;
+    height: auto;
+    display: block;
+}
+
+/* Main Title Section - Contains title and energy usage */
+.header-main {
+    flex: 1;
+    text-align: center;
+    min-width: 160px;
+    position: relative;
+}
+
+.header-title-section {
+    position: relative;
+    min-height: 45px;
+}
+
+.main-title {
+    font-family: Fieldwork, Futura, sans-serif;
+    font-size: 1em;
+    font-weight: normal;
+    color: black;
+    margin: 0;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.energy-usage-overlay {
     position: absolute;
-    top: 5px;
+    top: 22px;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    pointer-events: none;
 }
 
+/* Year Section - Separate section for year display */
+.header-year {
+    flex: 1;
+    min-width: 80px;
+    height: 45px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.year-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* Info Section */
+.header-info {
+    flex: 1.9;
+    min-width: 160px;
+    text-align: left;
+}
+
+.subtitle {
+    font-family: Fieldwork-HumThin, Futura, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    font-weight: bolder;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+
+.attribution {
+    font-family: Fieldwork-HumThin, Futura, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    font-weight: normal;
+    line-height: 1.2;
+}
+
+/* Affiliation Section */
+.header-affiliation {
+    flex: 1.7;
+    text-align: center;
+    min-width: 140px;
+}
+
+.affiliation-text {
+    font-family: Fieldwork-HumThin, Futura, sans-serif;
+    font-size: 1em;
+    color: #000000;
+    font-weight: normal;
+    line-height: 1.2;
+}
+
+/* SVG Overlay Styles */
+.energy-svg-overlay,
+.year-svg-overlay {
+    z-index: 10;
+}
+
+.energy-svg-overlay text,
+.year-svg-overlay text {
+    font-family: Fieldwork, Futura, sans-serif;
+    fill: black;
+}
+
+/* Legacy SVG styles for compatibility */
 .title_container svg {
-    position: absolute;
     font-size: 15px;
 }
 
@@ -147,18 +273,131 @@ text, tspan {
     font-variant-numeric: tabular-nums;
 }
 
-.title_container .citation, .title_container .affiliation {
-    font-family: Fieldwork-HumThin, Futura, sans-serif;
-    font-size: 1em;
-    fill: #000000;
-    font-weight: bolder;
+/* Mobile Responsive Design */
+@media (max-width: 1024px) {
+    .header-content {
+        gap: 15px;
+    }
+
+    .main-title {
+        font-size: 0.9em;
+    }
+
+    .header-logo {
+        min-width: 50px;
+    }
+
+    .header-main,
+    .header-year,
+    .header-info,
+    .header-affiliation {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .year-svg-overlay text {
+        font-size: 2.8em !important;
+    }
+
+    .subtitle, .attribution, .affiliation-text {
+        font-size: 0.9em;
+    }
 }
 
-.title_container .title-bottom, .title_container .affiliation-bottom {
-    font-family: Fieldwork-HumThin, Futura, sans-serif;
-    font-size: 1em;
-    fill: #000000;
-    font-weight: bolder;
+@media (max-width: 768px) {
+    .title_container {
+        padding: 6px 12px;
+    }
+
+    .header-content {
+        gap: 10px;
+    }
+
+    .header-logo {
+        min-width: 40px;
+    }
+
+    .header-logo img {
+        max-height: 35px;
+    }
+
+    .main-title {
+        font-size: 0.8em;
+    }
+
+    .header-main,
+    .header-year,
+    .header-info,
+    .header-affiliation {
+        flex: 1;
+        min-width: 100px;
+    }
+
+    .header-year {
+        height: 40px;
+    }
+
+    .year-svg-overlay text {
+        font-size: 2.5em !important;
+    }
+
+    .energy-svg-overlay text {
+        font-size: 0.8em !important;
+    }
+
+    .subtitle, .attribution, .affiliation-text {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 600px) {
+    .header-content {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .header-main {
+        order: 1;
+        flex: 1 1 100%;
+        margin-bottom: 8px;
+    }
+
+    .header-year {
+        order: 2;
+        flex: 1 1 100%;
+        margin-bottom: 8px;
+        justify-content: center;
+        height: 50px;
+    }
+
+    .header-logo {
+        order: 3;
+        flex: 1 1 50%;
+    }
+
+    .header-info {
+        order: 4;
+        flex: 1 1 100%;
+        margin-bottom: 8px;
+    }
+
+    .header-affiliation {
+        order: 5;
+        flex: 1 1 50%;
+        text-align: left;
+    }
+
+    .main-title {
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .energy-usage-overlay {
+        position: relative;
+        top: 0;
+        text-align: center;
+        margin-top: 5px;
+    }
 }
 
 /* Totals */

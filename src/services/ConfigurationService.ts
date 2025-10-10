@@ -237,6 +237,28 @@ export class ConfigurationService {
     }
 
     /**
+     * Get responsive header dimensions for current container width
+     */
+    public getResponsiveHeaderInfo(): {
+        containerWidth: number;
+        isNarrow: boolean;
+        isMobile: boolean;
+        animationScale: number
+    } {
+        const containerWidth = this.WIDTH;
+        const isNarrow = containerWidth < 1024;
+        const isMobile = containerWidth < 768;
+        const animationScale = isMobile ? 0.85 : 1;
+
+        return {
+            containerWidth,
+            isNarrow,
+            isMobile,
+            animationScale
+        };
+    }
+
+    /**
      * Get human-readable display name for sector/box
      */
     public getBoxDisplayName(sector: string): string {

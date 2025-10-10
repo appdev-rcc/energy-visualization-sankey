@@ -514,14 +514,46 @@ export default class Sankey {
      * Creates the DOM structure needed for controls, timeline, and chart display
      */
     private injectHTML(): void {
+        const country = this.options.country;
+        const firstYear = this.services.dataService!.firstYear!;
+        const lastYear = this.services.dataService!.lastYear!;
+
         let html = `
         <div class="title_container">
-            <a href="https://www.rdcep.org/" target="_blank">
-                <img src="https://images.squarespace-cdn.com/content/v1/54dcfad0e4b0eaff5e0068bf/1446137765478-FX9WM00VV1LWAFUJRZBI/rdcep+sig2.png"
-                style="max-height: 50px;z-index: 999;"
-                alt="The Center for Robust Decision-making on Climate and Energy Policy (RDCEP)"
-                title="The Center for Robust Decision-making on Climate and Energy Policy (RDCEP)">
-            </a>
+            <div class="header-content">
+                <div class="header-logo">
+                    <a href="https://www.rdcep.org/" target="_blank">
+                        <img src="https://images.squarespace-cdn.com/content/v1/54dcfad0e4b0eaff5e0068bf/1446137765478-FX9WM00VV1LWAFUJRZBI/rdcep+sig2.png"
+                        alt="The Center for Robust Decision-making on Climate and Energy Policy (RDCEP)"
+                        title="The Center for Robust Decision-making on Climate and Energy Policy (RDCEP)">
+                    </a>
+                </div>
+                
+                <div class="header-main">
+                    <div class="header-title-section">
+                        <h1 class="main-title">${country} energy usage</h1>
+                        <div class="energy-usage-overlay">
+                            <!-- SVG overlay for energy usage will be positioned here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="header-year">
+                    <div class="year-overlay">
+                        <!-- SVG overlay for animated year will be positioned here -->
+                    </div>
+                </div>
+                
+                <div class="header-info">
+                    <div class="subtitle">Energy Transitions in ${country} History, ${firstYear}-${lastYear}</div>
+                    <div class="attribution">Suits, Matteson, and Moyer (2020)</div>
+                </div>
+                
+                <div class="header-affiliation">
+                    <div class="affiliation-text">Center for Robust Decision-making on</div>
+                    <div class="affiliation-text">Climate and Energy Policy, UChicago</div>
+                </div>
+            </div>
         </div>
         <div class="us-energy-sankey-wrapper">
             <div class="sankey" style="line-height: 0;"></div>
