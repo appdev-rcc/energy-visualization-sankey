@@ -22,12 +22,12 @@ class RealDataPerformanceValidator {
     ensureDirectories() {
         if (!fs.existsSync(this.performanceDir)) {
             fs.mkdirSync(this.performanceDir, {recursive: true});
-            console.log(`📁 Created performance directory: ${this.performanceDir}`);
+            console.log(`Created performance directory: ${this.performanceDir}`);
         }
     }
 
     async setup() {
-        console.log('⚡ Setting up browser for performance validation...');
+        console.log('Setting up browser for performance validation...');
         this.browser = await chromium.launch({
             headless: true,
             args: [
@@ -42,7 +42,7 @@ class RealDataPerformanceValidator {
         const page = await this.browser.newPage();
 
         try {
-            console.log('📊 Measuring initialization performance with 222 years of real data...');
+            console.log('Measuring initialization performance with 222 years of real data...');
 
             // Navigate to the test page first
             await page.goto('http://localhost:8080/examples/visual-test.html', {
@@ -94,7 +94,7 @@ class RealDataPerformanceValidator {
         const page = await this.browser.newPage();
 
         try {
-            console.log('🎬 Measuring animation performance across historical periods...');
+            console.log('Measuring animation performance across historical periods...');
 
             // Navigate to the page
             await page.goto('http://localhost:8080/examples/visual-test.html', {
@@ -185,7 +185,7 @@ class RealDataPerformanceValidator {
         const page = await this.browser.newPage();
 
         try {
-            console.log('🧠 Measuring memory usage patterns...');
+            console.log('Measuring memory usage patterns...');
 
             await page.goto('http://localhost:8080/examples/visual-test.html', {
                 waitUntil: 'networkidle',
@@ -253,7 +253,7 @@ class RealDataPerformanceValidator {
     }
 
     async runCompletePerformanceValidation() {
-        console.log('🚀 Starting comprehensive performance validation...\n');
+        console.log('Starting comprehensive performance validation...\n');
 
         const results = {};
 
@@ -279,18 +279,18 @@ class RealDataPerformanceValidator {
             return results;
 
         } catch (error) {
-            console.error('❌ Performance validation failed:', error);
+            console.error('Performance validation failed:', error);
             throw error;
         }
     }
 
     reportInitializationResults(metrics) {
         if (metrics.error) {
-            console.error(`❌ Initialization error: ${metrics.error}`);
+            console.error(`Initialization error: ${metrics.error}`);
             return;
         }
 
-        console.log(`📊 Initialization Results:`);
+        console.log(`Initialization Results:`);
         console.log(`   Total time: ${metrics.totalTime.toFixed(2)}ms`);
         console.log(`   Data points: ${metrics.dataPointCount} years (${metrics.firstYear}-${metrics.lastYear})`);
 
@@ -301,11 +301,11 @@ class RealDataPerformanceValidator {
 
     reportAnimationResults(metrics) {
         if (metrics.error) {
-            console.error(`❌ Animation error: ${metrics.error}`);
+            console.error(`Animation error: ${metrics.error}`);
             return;
         }
 
-        console.log(`🎬 Animation Results:`);
+        console.log(`Animation Results:`);
         console.log(`   Duration: ${metrics.totalDuration.toFixed(2)}ms`);
         console.log(`   Frames: ${metrics.frameCount}`);
         console.log(`   Average FPS: ${metrics.averageFPS.toFixed(2)}`);
@@ -317,7 +317,7 @@ class RealDataPerformanceValidator {
     }
 
     reportMemoryResults(metrics) {
-        console.log(`🧠 Memory Results:`);
+        console.log(`Memory Results:`);
         console.log(`   Peak memory: ${(metrics.peakMemory / 1024 / 1024).toFixed(2)}MB`);
         console.log(`   Memory growth: ${(metrics.memoryGrowth / 1024 / 1024).toFixed(2)}MB`);
 
@@ -346,7 +346,7 @@ class RealDataPerformanceValidator {
 
         fs.writeFileSync(summaryFile, JSON.stringify(summary, null, 2));
 
-        console.log(`\n💾 Performance baseline saved:`);
+        console.log(`\nPerformance baseline saved:`);
         console.log(`   Details: ${baselineFile}`);
         console.log(`   Summary: ${summaryFile}`);
     }
@@ -367,7 +367,7 @@ async function main() {
         await validator.setup();
         const results = await validator.runCompletePerformanceValidation();
 
-        console.log('\n✅ Performance validation completed successfully!');
+        console.log('\nPerformance validation completed successfully!');
 
         // Performance thresholds (adjust based on your requirements)
         const thresholds = {
@@ -379,17 +379,17 @@ async function main() {
         let failed = false;
 
         if (results.initialization?.totalTime > thresholds.maxInitTime) {
-            console.error(`❌ Initialization too slow: ${results.initialization.totalTime.toFixed(2)}ms > ${thresholds.maxInitTime}ms`);
+            console.error(`Initialization too slow: ${results.initialization.totalTime.toFixed(2)}ms > ${thresholds.maxInitTime}ms`);
             failed = true;
         }
 
         if (results.animation?.averageFPS < thresholds.minFPS) {
-            console.error(`❌ FPS too low: ${results.animation.averageFPS.toFixed(2)} < ${thresholds.minFPS}`);
+            console.error(`FPS too low: ${results.animation.averageFPS.toFixed(2)} < ${thresholds.minFPS}`);
             failed = true;
         }
 
         if (results.memory?.peakMemory > thresholds.maxMemoryMB * 1024 * 1024) {
-            console.error(`❌ Memory usage too high: ${(results.memory.peakMemory / 1024 / 1024).toFixed(2)}MB > ${thresholds.maxMemoryMB}MB`);
+            console.error(`Memory usage too high: ${(results.memory.peakMemory / 1024 / 1024).toFixed(2)}MB > ${thresholds.maxMemoryMB}MB`);
             failed = true;
         }
 
@@ -398,7 +398,7 @@ async function main() {
         }
 
     } catch (error) {
-        console.error('❌ Performance validation crashed:', error);
+        console.error('Performance validation crashed:', error);
         process.exit(1);
     } finally {
         await validator.teardown();

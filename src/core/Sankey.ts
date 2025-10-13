@@ -630,18 +630,15 @@ export default class Sankey {
         // Build summary and graph data using calculation services
         const summary = this.services.summaryService!.summary!;
         const graphs = this.services.graphService!.graphs;
-        console.log("graphService", JSON.stringify(graphs));
 
         // Build graph nest structure for animation timeline
         const graphNest = this.buildGraphNest(graphs, summary);
-        console.log("buildGraphNest", JSON.stringify(graphs));
 
         // Render initial chart with visual elements
         this.services.renderingService!.drawInitialChart(this.svg, this.tooltip);
 
         // Initialize animation system with processed data
         this.services.animationService!.setupAnimation(graphs, graphNest, this.svg, this.tooltip);
-        console.log("setupAnimation", JSON.stringify(graphs));
 
         // Initialize user interactions
         this.services.interactionService!.initializeInteractions(this.svg, this.tooltip);

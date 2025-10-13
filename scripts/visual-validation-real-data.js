@@ -88,13 +88,13 @@ class RealDataVisualValidator {
         [this.baselineDir, this.outputDir, this.diffDir].forEach(dir => {
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, {recursive: true});
-                console.log(`📁 Created directory: ${dir}`);
+                console.log(`Created directory: ${dir}`);
             }
         });
     }
 
     async setup() {
-        console.log('🚀 Setting up browser for visual validation...');
+        console.log('Setting up browser for visual validation...');
         this.browser = await chromium.launch({
             headless: true,
             args: [
@@ -114,7 +114,7 @@ class RealDataVisualValidator {
             await page.setViewportSize({width: 1400, height: 900});
 
             // Navigate to the test page
-            console.log(`📸 Capturing: ${scenario.description}`);
+            console.log(`Capturing: ${scenario.description}`);
             await page.goto('http://localhost:8080/examples/visual-test.html', {
                 waitUntil: 'networkidle',
                 timeout: 30000
@@ -145,7 +145,7 @@ class RealDataVisualValidator {
                 });
 
                 if (actualYear !== scenario.year) {
-                    console.warn(`⚠️ Year mismatch: expected ${scenario.year}, got ${actualYear}`);
+                    console.warn(`Year mismatch: expected ${scenario.year}, got ${actualYear}`);
                 }
             }
 
@@ -176,11 +176,11 @@ class RealDataVisualValidator {
                 clip: {x: 0, y: 0, width: 1400, height: 1000} // Consistent clipping
             });
 
-            console.log(`✅ Captured: ${scenario.name} (${scenario.year || 'default'})`);
+            console.log(`Captured: ${scenario.name} (${scenario.year || 'default'})`);
             return screenshot;
 
         } catch (error) {
-            console.error(`❌ Failed to capture ${scenario.name}:`, error.message);
+            console.error(`Failed to capture ${scenario.name}:`, error.message);
             throw error;
         } finally {
             await page.close();
@@ -193,7 +193,7 @@ class RealDataVisualValidator {
         const diffPath = path.join(this.diffDir, filename);
 
         if (!fs.existsSync(baselinePath)) {
-            console.log(`📝 Creating new baseline: ${filename}`);
+            console.log(`Creating new baseline: ${filename}`);
             fs.copyFileSync(outputPath, baselinePath);
             return {match: true, isNewBaseline: true};
         }
@@ -240,7 +240,7 @@ class RealDataVisualValidator {
             };
 
         } catch (error) {
-            console.error(`❌ Error comparing ${filename}:`, error.message);
+            console.error(`Error comparing ${filename}:`, error.message);
             return {
                 match: false,
                 error: error.message
@@ -249,7 +249,7 @@ class RealDataVisualValidator {
     }
 
     async validateAllScenarios() {
-        console.log('🎯 Starting visual validation with REAL US energy data (1800-2021)...\n');
+        console.log('Starting visual validation with REAL US energy data (1800-2021)...\n');
         console.log(`Testing ${this.testScenarios.length} scenarios across 222 years of energy history\n`);
 
         const results = [];
@@ -272,18 +272,18 @@ class RealDataVisualValidator {
                 });
 
                 if (comparison.error) {
-                    console.error(`❌ ${scenario.name}: ${comparison.error}`);
+                    console.error(`${scenario.name}: ${comparison.error}`);
                 } else if (!comparison.match && !comparison.isNewBaseline) {
-                    console.error(`❌ ${scenario.name}: ${comparison.pixelDiffCount} pixels different (${comparison.diffPercentage.toFixed(3)}%)`);
+                    console.error(`${scenario.name}: ${comparison.pixelDiffCount} pixels different (${comparison.diffPercentage.toFixed(3)}%)`);
                     console.error(`   Diff saved to: ${comparison.diffPath}`);
                 } else if (comparison.isNewBaseline) {
-                    console.log(`📝 ${scenario.name}: New baseline created`);
+                    console.log(`${scenario.name}: New baseline created`);
                 } else {
-                    console.log(`✅ ${scenario.name}: Perfect pixel match`);
+                    console.log(`${scenario.name}: Perfect pixel match`);
                 }
 
             } catch (error) {
-                console.error(`💥 ${scenario.name}: Capture failed - ${error.message}`);
+                console.error(`${scenario.name}: Capture failed - ${error.message}`);
                 results.push({
                     scenario: scenario.name,
                     description: scenario.description,
@@ -302,12 +302,12 @@ class RealDataVisualValidator {
     async teardown() {
         if (this.browser) {
             await this.browser.close();
-            console.log('🧹 Browser closed');
+            console.log('Browser closed');
         }
     }
 
     generateReport(results) {
-        console.log(`\n📊 VISUAL VALIDATION REPORT`);
+        console.log(`\nVISUAL VALIDATION REPORT`);
         console.log(`${'='.repeat(50)}`);
 
         const total = results.length;
@@ -323,7 +323,7 @@ class RealDataVisualValidator {
         console.log(`Errors: ${errors}`);
 
         if (failed > 0) {
-            console.log(`\n❌ FAILED SCENARIOS:`);
+            console.log(`\nFAILED SCENARIOS:`);
             results.filter(r => !r.match && !r.isNewBaseline && !r.error).forEach(r => {
                 console.log(`   ${r.scenario} (${r.year}): ${r.diffPercentage.toFixed(3)}% difference`);
                 console.log(`   ${r.description}`);
@@ -332,7 +332,7 @@ class RealDataVisualValidator {
         }
 
         if (errors > 0) {
-            console.log(`\n💥 ERROR SCENARIOS:`);
+            console.log(`\nERROR SCENARIOS:`);
             results.filter(r => r.error).forEach(r => {
                 console.log(`   ${r.scenario}: ${r.error}`);
             });
@@ -352,16 +352,16 @@ async function main() {
         const summary = validator.generateReport(results);
 
         if (summary.failed > 0 || summary.errors > 0) {
-            console.error(`\n❌ Visual validation failed: ${summary.failed} failures, ${summary.errors} errors`);
+            console.error(`\nVisual validation failed: ${summary.failed} failures, ${summary.errors} errors`);
             process.exit(1);
         } else if (summary.newBaselines > 0) {
-            console.log(`\n📝 ${summary.newBaselines} new baselines created. Re-run to validate against them.`);
+            console.log(`\n${summary.newBaselines} new baselines created. Re-run to validate against them.`);
         } else {
-            console.log(`\n✅ All ${summary.passed} visual validations passed! Pixel-perfect accuracy maintained.`);
+            console.log(`\nAll ${summary.passed} visual validations passed! Pixel-perfect accuracy maintained.`);
         }
 
     } catch (error) {
-        console.error('❌ Visual validation crashed:', error);
+        console.error('Visual validation crashed:', error);
         process.exit(1);
     } finally {
         await validator.teardown();

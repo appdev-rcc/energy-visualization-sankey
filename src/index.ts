@@ -14,9 +14,6 @@
  * @author Research Computing Center (RCC), University of Chicago
  */
 
-// Export the main visualization class
-export {default} from '@/core/Sankey';
-
 // Export public type definitions for TypeScript consumers
 export type {
     SankeyOptions,
@@ -33,3 +30,6 @@ export {
     SankeyError,
     DataValidationError
 } from '@/types/index';
+
+// Export the main visualization class
+export {default as default} from '@/core/Sankey';

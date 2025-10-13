@@ -35,16 +35,10 @@ export class GraphService {
      */
     private buildGraphs() {
         this.calculateGraphY();
-        console.log("calculateGraphY", JSON.stringify(this.graphs));
         this.calculateGraphX();
-        console.log("calculateGraphX", JSON.stringify(this.graphs));
-
         this.spaceUpsAndDowns();
-        console.log("spaceUpsAndDowns", JSON.stringify(this.graphs));
-
         // Process waste heat flows
         this.processWasteHeatFlows();
-        console.log("processWasteHeatFlows", JSON.stringify(this.graphs));
     }
 
     /**

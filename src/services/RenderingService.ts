@@ -346,8 +346,6 @@ export class RenderingService {
 
         const graphData = graphs[yearIndex];
 
-        console.log("graphData.graph", graphData.graph)
-
         // Filter valid strokes and group by fuel for optimized rendering
         const validStrokes = graphData.graph.filter(stroke =>
             stroke.b.x !== null && stroke.b.x !== undefined
@@ -359,8 +357,6 @@ export class RenderingService {
             groups[stroke.fuel].push(stroke);
             return groups;
         }, {});
-
-        console.log("strokesByFuel", strokesByFuel)
 
         Object.entries(strokesByFuel).forEach(([fuel, strokes]: [string, any]) => {
             svg.select(`.fuel.${fuel}`)                             // Target existing fuel group container

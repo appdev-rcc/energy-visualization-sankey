@@ -80,10 +80,6 @@ export interface SankeyOptions {
     readonly debugLogging?: boolean;
 }
 
-export interface RequiredSankeyOptions extends Required<SankeyOptions> {
-    // All optional properties are now required with defaults
-}
-
 // Mathematical structures
 export interface GraphPoint {
     x: number;
