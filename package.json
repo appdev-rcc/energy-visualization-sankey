@@ -1,6 +1,6 @@
 {
   "name": "energy-visualization-sankey",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "description": "A modern TypeScript library for creating interactive Sankey diagrams that visualize energy flows from sources to consumption sectors.",
   "keywords": [
     "sankey",

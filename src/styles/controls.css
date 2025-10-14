@@ -140,7 +140,7 @@ input[type="checkbox"].switch_1 {
     appearance: none;
     width: 3.5em;
     height: 1.5em;
-    background: black;
+    background: #666666;
     border-radius: 3em;
     position: relative;
     cursor: pointer;
@@ -150,7 +150,7 @@ input[type="checkbox"].switch_1 {
 }
 
 input[type="checkbox"].switch_1:checked {
-    background: black;
+    background: #e49942;
 }
 
 input[type="checkbox"].switch_1:after {
@@ -171,6 +171,20 @@ input[type="checkbox"].switch_1:after {
 
 input[type="checkbox"].switch_1:checked:after {
     left: calc(100% - 1.5em);
+}
+
+/* Hover effects for better interactivity */
+input[type="checkbox"].switch_1:hover {
+    background: #555555;
+}
+
+input[type="checkbox"].switch_1:checked:hover {
+    background: #e49942;
+}
+
+/* Focus states for accessibility */
+input[type="checkbox"].switch_1:focus {
+    box-shadow: 0 0 0 3px #F5DBBC;
 }
 
 /* Milestone Tick Markers */

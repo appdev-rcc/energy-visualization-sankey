@@ -72,7 +72,7 @@ export class ConfigurationService {
     // Example: 50 Quads × 0.02 = 1.0 pixel height
 
     // ELECTRICITY BOX POSITIONING: Special coordinates for electricity box (bidirectional flows)
-    public readonly ELEC_BOX_X = 300 as const;
+    public readonly ELEC_BOX_X = 320 as const;
     public readonly ELEC_BOX_Y = 120 as const;
 
     public readonly HEAT_BOX_X = 750 as const;
