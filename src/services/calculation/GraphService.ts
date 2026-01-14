@@ -97,13 +97,13 @@ export class GraphService {
         // Eliminates repeated property access during O(n³) loop execution
         // Performance improvement: 5-10% reduction in execution time
         const SCALE = this.configService.SCALE;                    // Energy-to-pixel conversion (0.02)
-        const ELEC_BOX_X = this.configService.ELEC_BOX_X;        // Electricity box X-coordinate
-        const ELEC_BOX_Y = this.configService.ELEC_BOX_Y;        // Electricity box Y-coordinate
+        const ELEC_BOX_X = this.configService.ELECTRICITY_BOX_X;        // Electricity box X-coordinate
+        const ELEC_BOX_Y = this.configService.ELECTRICITY_BOX_Y;        // Electricity box Y-coordinate
         const HEAT_BOX_X = this.configService.HEAT_BOX_X;        // Heat box X-coordinate
         const HEAT_BOX_Y = this.configService.HEAT_BOX_Y;        // Heat box Y-coordinate
         const BOX_WIDTH = this.configService.BOX_WIDTH;           // Standard box width
         const LEFT_X = this.configService.LEFT_X;                 // Left column X-coordinate
-        const TOP_Y = this.configService.TOP_Y;                   // Top margin Y-coordinate
+        const TOP_Y = this.configService.LEFT_Y;                   // Top margin Y-coordinate
         const SR3 = this.configService.SR3;                       // Slope ratio (height/3)
         const PATH_GAP = this.configService.PATH_GAP;             // Visual gap between flow paths
         const LEFT_GAP = this.configService.LEFT_GAP;             // Gap between fuel boxes
@@ -382,7 +382,7 @@ export class GraphService {
         const BOX_WIDTH = this.configService.BOX_WIDTH;
         const SCALE = this.configService.SCALE;
         const SR3 = this.configService.SR3;
-        const ELEC_GAP = this.configService.ELEC_GAP;
+        const ELEC_GAP = this.configService.ELECTRICITY_GAP;
         const HSR3 = this.configService.HSR3;
 
         for (let i = 0; i < this.graphs.length; ++i) {
@@ -415,8 +415,8 @@ export class GraphService {
         const BOX_WIDTH = this.configService.BOX_WIDTH;
         const SR3 = this.configService.SR3;
         const HSR3 = this.configService.HSR3;
-        const ELEC_GAP = this.configService.ELEC_GAP;
-        const ELEC_BOX_Y = this.configService.ELEC_BOX_Y;
+        const ELEC_GAP = this.configService.ELECTRICITY_GAP;
+        const ELEC_BOX_Y = this.configService.ELECTRICITY_BOX_Y;
 
         for (let i = 0; i < this.graphs.length; ++i) {
             let current_box: string | null = null;

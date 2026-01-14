@@ -61,24 +61,22 @@ export class ConfigurationService {
     // ===================== COORDINATE POSITIONING CONSTANTS =====================
 
     // LEFT COLUMN POSITIONING: Fuel source boxes alignment
-    public readonly LEFT_X = 10;                        // X-coordinate for left column (fuel sources)
-    public readonly TOP_Y = 100;                        // Y-coordinate for top margin (visual breathing space)
+    public readonly LEFT_X: number = 10;                        // X-coordinate for left column (fuel sources)
+    public readonly LEFT_Y: number = 100;                        // Y-coordinate for top margin (visual breathing space)
 
     // ==================== MATHEMATICAL SCALING CONSTANTS ====================
 
     // ENERGY-TO-PIXEL CONVERSION: Critical scaling factor for proportional representation
-    public readonly SCALE = 0.02;                       // Converts Quads to pixels: 1 Quad = 0.02 pixels height
+    public readonly SCALE: number = 0.02;                       // Converts Quads to pixels: 1 Quad = 0.02 pixels height
     // Calibrated for typical US energy consumption (0-100+ Quads)
     // Example: 50 Quads × 0.02 = 1.0 pixel height
 
     // ELECTRICITY BOX POSITIONING: Special coordinates for electricity box (bidirectional flows)
-    public readonly ELEC_BOX_X = 320 as const;
-    public readonly ELEC_BOX_Y = 120 as const;
+    public readonly ELECTRICITY_BOX_X: number = 320 as const;
+    public readonly ELECTRICITY_BOX_Y: number = 120 as const;
 
-    public readonly HEAT_BOX_X = 750 as const;
-    public readonly HEAT_BOX_Y = 200 as const;
-    // X=350: Positioned between fuel sources (left) and sectors (right)
-    // Y=120: Offset below title area for visual clarity
+    public readonly HEAT_BOX_X: number = 750 as const;
+    public readonly HEAT_BOX_Y: number = 200 as const;
 
     // ======================== VISUAL SPACING CONSTANTS ========================
 
@@ -87,7 +85,7 @@ export class ConfigurationService {
     public readonly RIGHT_GAP: number;                  // Gap between sector boxes (right column) - computed as LEFT_GAP × 2.1
 
     // ANIMATION PARAMETERS: Timing and transition control
-    public readonly SPEED: number;                      // Animation speed in milliseconds (from user options, default 200)
+    public readonly SPEED: number = 200;                      // Animation speed in milliseconds (from user options, default 200)
     public readonly BLEED = 0.5;                        // Edge bleed factor for smooth visual transitions
 
     // =================== GEOMETRIC CALCULATION CONSTANTS ===================
@@ -100,7 +98,7 @@ export class ConfigurationService {
     // FLOW PATH SPACING: Visual separation between parallel energy flows
     public readonly PATH_GAP: number = 20;                      // Pixel gap between parallel flow paths
     // Prevents visual overlap while maintaining readability
-    public readonly ELEC_GAP = 19;                      // Special gap for electricity flows (slightly smaller)
+    public readonly ELECTRICITY_GAP = 19;                      // Special gap for electricity flows (slightly smaller)
     // Optimized for electricity box's central position
 
     // ====================== ENERGY SOURCE DEFINITIONS ======================
@@ -165,7 +163,31 @@ export class ConfigurationService {
     ) {
         // Calculate computed properties
         this.RIGHT_GAP = this.LEFT_GAP * 2.1;
-        this.SPEED = options.animationSpeed || 200;
+
+        if (options.animationSpeed) {
+            this.SPEED = options.animationSpeed;
+        }
+        if (options.scale) {
+            this.SCALE = options.scale;
+        }
+        if (options.leftX) {
+            this.LEFT_X = options.leftX;
+        }
+        if (options.leftY) {
+            this.LEFT_Y = options.leftY;
+        }
+        if (options.electricityBoxX) {
+            this.ELECTRICITY_BOX_X = options.electricityBoxX;
+        }
+        if (options.electricityBoxY) {
+            this.ELECTRICITY_BOX_Y = options.electricityBoxY;
+        }
+        if (options.heatBoxX) {
+            this.HEAT_BOX_X = options.heatBoxX;
+        }
+        if (options.heatBoxY) {
+            this.HEAT_BOX_Y = options.heatBoxY;
+        }
 
         this.FLOW_PATHS_ORDER = {
             "elec": this.BOXES_DEFAULT_FLOW_PATHS_ORDER,
@@ -366,39 +388,54 @@ export class ConfigurationService {
     private validateConfiguration(): void {
         // Validate dimensions
         if (this.WIDTH <= 0 || this.HEIGHT <= 0) {
-            throw new Error('ConfigurationService: Invalid dimensions');
+            throw new Error('Invalid dimensions');
         }
 
         // Validate box positioning
         if (this.BOX_WIDTH <= 0 || this.BOX_HEIGHT <= 0) {
-            throw new Error('ConfigurationService: Invalid box dimensions');
+            throw new Error('Invalid box dimensions');
+        }
+
+        // Validate scaling factors
+        if (this.SPEED <= 0) {
+            throw new Error('Invalid animation speed');
         }
 
         // Validate scaling factors
         if (this.SCALE <= 0) {
-            throw new Error('ConfigurationService: Invalid scale factor');
+            throw new Error('Invalid scale factor');
+        }
+
+        // Validate left source positioning
+        if (this.LEFT_X <= 0 || this.LEFT_Y <= 0) {
+            throw new Error('Invalid left sources position');
         }
 
         // Validate electricity box positioning
-        if (this.ELEC_BOX_X <= 0 || this.ELEC_BOX_X <= 0) {
-            throw new Error('ConfigurationService: Invalid electricity box position');
+        if (this.ELECTRICITY_BOX_X <= 0 || this.ELECTRICITY_BOX_Y <= 0) {
+            throw new Error('Invalid electricity box position');
+        }
+
+        // Validate heat box positioning
+        if (this.HEAT_BOX_X <= 0 || this.HEAT_BOX_Y <= 0) {
+            throw new Error('Invalid heat box position');
         }
 
         // Validate fuel definitions
         if (this.FUELS.length === 0) {
-            throw new Error('ConfigurationService: No fuels defined');
+            throw new Error('No fuels defined');
         }
 
         // Validate sector definitions
         if (this.BOXES.length === 0) {
-            throw new Error('ConfigurationService: No sectors defined');
+            throw new Error('No sectors defined');
         }
 
         // Validate required fuels exist
         const requiredFuels = ['elec', 'solar', 'nuclear', 'hydro', 'wind', 'geo', 'gas', 'coal', 'bio', 'petro'];
         for (const fuel of requiredFuels) {
             if (!this.FUEL_NAMES.includes(fuel)) {
-                console.warn(`ConfigurationService: Missing required fuel: ${fuel}`);
+                console.warn(`Missing required fuel: ${fuel}`);
             }
         }
 
@@ -406,11 +443,11 @@ export class ConfigurationService {
         const requiredSectors = ['elec', 'res', 'ag', 'indus', 'trans'];
         for (const sector of requiredSectors) {
             if (!this.BOX_NAMES.includes(sector)) {
-                console.warn(`ConfigurationService: Missing required sector: ${sector}`);
+                console.warn(`Missing required sector: ${sector}`);
             }
         }
 
-        this.logger.log('ConfigurationService: All configuration validated successfully');
+        this.logger.log('All configuration validated successfully');
     }
 
     // ==================== UTILITY METHODS ====================

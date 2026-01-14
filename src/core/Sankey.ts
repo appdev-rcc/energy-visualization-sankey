@@ -205,7 +205,6 @@ export default class Sankey {
                 timestamp: Date.now(),
                 source: 'SankeyVisualization',
                 data: {
-                    version: '7.0.0',
                     services: [], // Will be populated as services come online
                     initTime: 0 // Will be updated when initialization completes
                 }
@@ -266,7 +265,6 @@ export default class Sankey {
                 timestamp: Date.now(),
                 source: 'SankeyVisualization',
                 data: {
-                    version: '7.0.0',
                     totalInitTime: totalInitializationTime,
                     dataPointCount: this.options.data.length,
                     yearRange: [
@@ -672,7 +670,7 @@ export default class Sankey {
         };
 
         for (let i = 0; i < graphs.length; ++i) {
-            let top = this.services.configurationService!.TOP_Y;
+            let top = this.services.configurationService!.LEFT_Y;
             const y = graphs[i].year;
 
             graphNest.strokes[y] = {};
@@ -686,7 +684,7 @@ export default class Sankey {
                 graphNest.strokes[y][f] = {};
 
                 if (f == 'elec') {
-                    graphNest.tops[y][f] = this.services.configurationService!.ELEC_BOX_Y - summary.totals[i].elec * SCALE;
+                    graphNest.tops[y][f] = this.services.configurationService!.ELECTRICITY_BOX_Y - summary.totals[i].elec * SCALE;
                 } else if (f == 'heat') {
                     graphNest.tops[y][f] = this.services.configurationService!.HEAT_BOX_Y - summary.totals[i].heat * SCALE;
                 } else {
@@ -1053,16 +1051,12 @@ export default class Sankey {
     private mergeOptionsWithDefaults(options: SankeyOptions): SankeyOptions {
         // Merge user options with system defaults
         return {
-            data: options.data,
-            country: options.country,
+            ...options,
             includeControls: options.includeControls !== false,
             includeTimeline: options.includeTimeline !== false,
             includeWasteToggle: options.includeWasteToggle !== false,
             autoPlay: options.autoPlay || false,
             showWasteHeat: options.showWasteHeat !== false,
-            animationSpeed: options.animationSpeed || 200,
-            width: options.width || null,
-            height: options.height || 620,
             loopAnimation: options.loopAnimation !== undefined ? options.loopAnimation : false
         };
     }

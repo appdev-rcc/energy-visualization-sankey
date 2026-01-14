@@ -74,8 +74,15 @@ export interface SankeyOptions {
     readonly autoPlay?: boolean;
     readonly showWasteHeat?: boolean;
     readonly animationSpeed?: number;
-    readonly width?: number | null;
+    readonly width?: number;
     readonly height?: number;
+    readonly scale?: number;
+    readonly leftX?: number;
+    readonly leftY?: number;
+    readonly electricityBoxX?: number;
+    readonly electricityBoxY?: number;
+    readonly heatBoxX?: number;
+    readonly heatBoxY?: number;
     readonly loopAnimation?: boolean;
     readonly debugLogging?: boolean;
 }

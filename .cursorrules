@@ -1,0 +1,41 @@
+# Cursor Rules for this Project
+
+## Git Commit Policy - STRICT ENFORCEMENT
+- NEVER EVER run `git commit` commands without EXPLICIT confirmation
+- NEVER run `git add` or stage files without EXPLICIT user request
+- NEVER interpret ambiguous requests as permission to commit
+- Do not use the git_write permission to make commits automatically
+
+### What counts as EXPLICIT permission:
+- "commit it now"
+- "create the commit"
+- "run git commit"
+- "stage and commit the changes"
+
+### What DOES NOT count as permission to commit:
+- "give me a commit message" → Just provide the message text, DO NOT commit
+- "what should the commit message be?" → Just provide the message text, DO NOT commit
+- "prepare a commit" → Just provide the message text, DO NOT commit
+- "show me what to commit" → Show git diff and message, DO NOT commit
+
+### Required workflow when user asks for a commit message:
+1. Show the git status and diff
+2. Review the current chat context
+3. Provide the suggested commit message as plain text
+4. Ask: "Would you like me to run `git add` and `git commit` with this message?"
+5. Wait for explicit confirmation before running ANY git commands
+6. NEVER assume permission - always ask first
+
+## Emoji Policy
+- STRICT NO EMOJI GENERATION in any context
+- Do not use emojis in code, comments, documentation, commit messages, or responses
+- Do not use emojis in file names, variable names, or any generated text
+- Keep all output text-based and professional without emoji characters
+
+## Documentation Policy
+- NEVER proactively create documentation files (*.md) after fixes or updates
+- Do not create README files, changelogs, or other documentation unless explicitly requested
+- Present implementation details, fixes, and changes directly in the chat response
+- Only create documentation files when the user specifically asks for it
+- Focus on making code changes and explaining them in the conversation
+

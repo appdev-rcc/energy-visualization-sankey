@@ -118,9 +118,9 @@ export class SummaryService {
         // Measured improvement: 5-10% reduction in execution time
         const FUELS = this.configService.FUELS;                    // Energy source types array
         const BOX_NAMES = this.configService.BOX_NAMES;            // Consumption sector names  
-        const ELEC_BOX_Y = this.configService.ELEC_BOX_Y;        // Electricity box Y-coordinate
+        const ELEC_BOX_Y = this.configService.ELECTRICITY_BOX_Y;        // Electricity box Y-coordinate
         const HEAT_BOX_Y = this.configService.HEAT_BOX_Y;        // Heat box Y-coordinate
-        const TOP_Y = this.configService.TOP_Y;                   // Top margin for fuel labels
+        const TOP_Y = this.configService.LEFT_Y;                   // Top margin for fuel labels
         const SCALE = this.configService.SCALE;                   // Energy-to-pixel conversion (0.02)
         const LEFT_GAP = this.configService.LEFT_GAP;             // Visual gap between fuel boxes
 
@@ -372,7 +372,7 @@ export class SummaryService {
         // ELEC_BOX_Y: Base Y-coordinate for electricity box (right-hand column)
         // +50: Visual offset below electricity box for residential sector
         this.boxTops = {
-            res: this.configService.ELEC_BOX_Y + 50,        // Base position for residential
+            res: this.configService.ELECTRICITY_BOX_Y + 50,        // Base position for residential
             heat: this.configService.HEAT_BOX_Y + 50,        // Base position for residential
             ag: 0,                                           // Will be calculated based on residential
             indus: 0,                                        // Will be calculated based on agriculture  

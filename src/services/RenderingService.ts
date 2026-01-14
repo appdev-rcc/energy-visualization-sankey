@@ -172,7 +172,7 @@ export class RenderingService {
             .attr('x', this.configService.LEFT_X)                           // X-position: left column alignment
             .attr('y', (d: any, i: number) => {                            // Y-position: calculated per fuel
                 // Calculate cumulative Y position for this fuel
-                let cumulativeTop = this.configService.TOP_Y;
+                let cumulativeTop = this.configService.LEFT_Y;
                 for (let j = 0; j < i; j++) {
                     const prevFuel = leftFuels[j];
                     const prevFuelTotal = totals[prevFuel.fuel] || 0;
@@ -236,8 +236,8 @@ export class RenderingService {
             // CONDITIONAL POSITIONING ALGORITHM: Electricity vs. Regular Sectors
             if (boxConfig.box === 'elec') {
                 // ELECTRICITY BOX: Special central positioning
-                x = this.configService.ELEC_BOX_X;                         // Configured X-position
-                y = this.configService.ELEC_BOX_Y - totals.elec * this.configService.SCALE;  // Dynamic Y-position
+                x = this.configService.ELECTRICITY_BOX_X;                         // Configured X-position
+                y = this.configService.ELECTRICITY_BOX_Y - totals.elec * this.configService.SCALE;  // Dynamic Y-position
             } else if (boxConfig.box === 'heat') {
                 // ELECTRICITY BOX: Special central positioning
                 x = this.configService.HEAT_BOX_X;                         // Configured X-position
