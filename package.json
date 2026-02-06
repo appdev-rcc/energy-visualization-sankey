@@ -1,6 +1,6 @@
 {
   "name": "energy-visualization-sankey",
-  "version": "1.0.11",
+  "version": "1.0.13",
   "description": "A modern TypeScript library for creating interactive Sankey diagrams that visualize energy flows from sources to consumption sectors.",
   "keywords": [
     "sankey",
@@ -30,11 +30,11 @@
       "import": "./dist/sankey.esm.js",
       "require": "./dist/sankey.umd.js"
     },
-    "./styles": "./dist/styles.css"
+    "./styles": "./dist/sankey.css"
   },
   "scripts": {
     "dev": "rollup -c -w",
-    "build": "rollup -c",
+    "build": "rollup -c && tsc-alias -p tsconfig.json",
     "build:dev": "rollup -c",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
@@ -73,6 +73,7 @@
     "rollup": "^4.6.1",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.36.0",
+    "tsc-alias": "^1.8.16",
     "tslib": "^2.6.0",
     "typescript": "^5.3.0"
   }

@@ -23,13 +23,13 @@ export type {
     YearTotals,
     BoxMaxes,
     BoxTops
-} from '@/types/index';
+} from './types/index';
 
 // Export error handling types
 export {
     SankeyError,
     DataValidationError
-} from '@/types/index';
+} from './types/index';
 
 // Export the main visualization class
-export {default as default} from '@/core/Sankey';
+export {default as default} from './core/Sankey';

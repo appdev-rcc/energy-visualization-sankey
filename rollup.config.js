@@ -27,7 +27,7 @@ const cssConfig = {
 };
 
 const baseConfig = {
-    input: 'src/core/Sankey.ts',
+    input: 'src/index.ts',
     // Embed D3 in the bundle for standalone distribution
     external: [],
     plugins: [
@@ -41,7 +41,16 @@ const baseConfig = {
             clean: true,
             abortOnError: false,
             rollupCommonJSResolveHack: false,
-            typescript: ts
+            typescript: ts,
+            tsconfigOverride: {
+                compilerOptions: {
+                    declaration: true,
+                    declarationMap: true,
+                    declarationDir: './dist/types',
+                    baseUrl: '.',
+                    paths: {}
+                }
+            }
         })
     ]
 };
