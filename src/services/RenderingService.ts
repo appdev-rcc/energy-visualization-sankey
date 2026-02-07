@@ -79,12 +79,12 @@ export class RenderingService {
      * Creates the energy usage SVG overlay in the title section
      */
     private createEnergyUsageOverlay(): void {
-        const energyContainer = d3.select('.energy-usage-overlay');
+        const energyContainer = d3.select('.evs-energy-usage-overlay');
 
         const energySvg = energyContainer
             .append('svg')
-            .attr('id', 'energy-usage-overlay')
-            .attr('class', 'energy-svg-overlay')
+            .attr('id', 'evs-energy-usage-overlay')
+            .attr('class', 'evs-energy-svg-overlay')
             .style('position', 'absolute')
             .style('top', '0')
             .style('left', '25%')
@@ -99,7 +99,7 @@ export class RenderingService {
             .attr('text-anchor', 'right')
             .attr('x', 0)
             .attr('y', 18)
-            .attr('class', 'unit year-total animate title-bottom')
+            .attr('class', 'evs-unit evs-year-total evs-animate evs-title-bottom')
             .attr('data-incr', '0')
             .attr('data-value', '0')
             .style('font-size', '0.9em')
@@ -112,12 +112,12 @@ export class RenderingService {
     private createYearOverlay(): void {
         const firstYear = this.dataService.firstYear!;
 
-        const yearContainer = d3.select('.year-overlay');
+        const yearContainer = d3.select('.evs-year-overlay');
 
         const yearSvg = yearContainer
             .append('svg')
-            .attr('id', 'year-overlay')
-            .attr('class', 'year-svg-overlay')
+            .attr('id', 'evs-year-overlay')
+            .attr('class', 'evs-year-svg-overlay')
             .style('position', 'absolute')
             .style('top', '0')
             .style('left', '0')
@@ -132,7 +132,7 @@ export class RenderingService {
             .attr('text-anchor', 'middle')
             .attr('x', '50%')
             .attr('y', '90%')
-            .attr('class', 'year animate')
+            .attr('class', 'evs-year evs-animate')
             .attr('data-incr', '0')
             .attr('data-value', firstYear)
             .style('font-size', '3.1em')
@@ -164,10 +164,10 @@ export class RenderingService {
         // Electricity & Heat (index 0, 1) are handled separately due to special positioning requirements
         const leftFuels = this.configService.FUELS.slice(2); // Remove electricity & heat from array
 
-        svg.selectAll('.fuel-label-left')
+        svg.selectAll('.evs-fuel-label-left')
             .data(leftFuels)
             .join('text')
-            .attr('class', (d: any) => `label animate fuel ${d.fuel} fuel-label-left`) // CSS classes for styling
+            .attr('class', (d: any) => `evs-label evs-animate evs-fuel evs-${d.fuel} evs-fuel-label-left`) // CSS classes for styling
             .text((d: any) => d.name)                                       // Human-readable fuel name
             .attr('x', this.configService.LEFT_X)                           // X-position: left column alignment
             .attr('y', (d: any, i: number) => {                            // Y-position: calculated per fuel
@@ -186,7 +186,7 @@ export class RenderingService {
                 const fuelTotal = totals[d.fuel] || 0;
                 return this.graphCalculationService.sigfig2(fuelTotal);
             })
-            .classed('hidden', (d: any) => {                               // Hide labels for zero-energy fuels
+            .classed('evs-hidden', (d: any) => {                               // Hide labels for zero-energy fuels
                 const fuelTotal = totals[d.fuel] || 0;
                 return fuelTotal === 0;
             });
@@ -256,8 +256,8 @@ export class RenderingService {
                 .attr('y', y)                                               // Vertical position
                 .attr('width', this.configService.BOX_WIDTH)                // Standard box width
                 .attr('height', boxTotal > 0 ? boxTotal * this.configService.SCALE + this.configService.BLEED : 0)  // Proportional height
-                .attr('class', `box sector animate ${boxConfig.box}`)             // CSS classes for styling
-                .classed('fuel', ['elec', 'heat'].includes(boxConfig.box))                        // Special class for electricity
+                .attr('class', `evs-box evs-sector evs-animate evs-${boxConfig.box}`)             // CSS classes for styling
+                .classed('evs-fuel', ['elec', 'heat'].includes(boxConfig.box))                        // Special class for electricity
                 .attr('data-sector', boxConfig.box)                               // Sector identifier
                 .attr('data-fuel', ['elec', 'heat'].includes(boxConfig.box) ? boxConfig.box : '')
                 .attr('data-incr', '0');                                    // Animation increment tracking
@@ -270,9 +270,9 @@ export class RenderingService {
                 .attr('dy', boxConfig.box === 'res' ? '-1.8em' : '-0.8em')       // Line spacing adjustment
                 .attr('data-sector', boxConfig.box)                               // Sector identification
                 .attr('data-fuel', ['elec', 'heat'].includes(boxConfig.box) ? boxConfig.box : '')
-                .attr('class', `label sector animate ${boxConfig.box}`)           // CSS classes
-                .classed('hidden', boxTotal === 0)                          // Conditional visibility
-                .classed('fuel', ['elec', 'heat'].includes(boxConfig.box));                        // Special class for electricity
+                .attr('class', `evs-label evs-sector evs-animate evs-${boxConfig.box}`)           // CSS classes
+                .classed('evs-hidden', boxTotal === 0)                          // Conditional visibility
+                .classed('evs-fuel', ['elec', 'heat'].includes(boxConfig.box));                        // Special class for electricity
 
             // SPECIAL CASE: RESIDENTIAL SECTOR MULTI-LINE LABEL
             if (boxConfig.box === 'res') {
@@ -285,7 +285,7 @@ export class RenderingService {
 
             // ENERGY TOTAL DISPLAY: Numerical energy consumption value
             text.append('tspan')                                            // Create total value tspan
-                .attr('class', `total sector animate ${boxConfig.box}`)           // CSS classes for styling
+                .attr('class', `evs-total evs-sector evs-animate evs-${boxConfig.box}`)           // CSS classes for styling
                 .attr('data-sector', boxConfig.box)                               // Sector identification
                 .attr('data-value', boxTotal)                               // Raw energy value
                 .text(this.graphCalculationService.sigfig2(boxTotal))       // Formatted display value
@@ -295,7 +295,7 @@ export class RenderingService {
 
             // WASTE HEAT DISPLAY: Thermodynamic losses for electricity consumption
             text.append('tspan')                                            // Create waste total tspan
-                .attr('class', `total waste-level sector animate ${boxConfig.box}`)  // CSS classes
+                .attr('class', `evs-total evs-waste-level evs-sector evs-animate evs-${boxConfig.box}`)  // CSS classes
                 .attr('data-sector', boxConfig.box)                               // Sector identification
                 .attr('data-value', '0')                                    // Initial waste value
                 .text(this.graphCalculationService.sigfig2(0))              // Formatted waste display
@@ -359,11 +359,11 @@ export class RenderingService {
         }, {});
 
         Object.entries(strokesByFuel).forEach(([fuel, strokes]: [string, any]) => {
-            svg.select(`.fuel.${fuel}`)                             // Target existing fuel group container
-                .selectAll('.flow-path')                          // Select flow paths within fuel group
+            svg.select(`.evs-fuel.evs-${fuel}`)                             // Target existing fuel group container
+                .selectAll('.evs-flow-path')                          // Select flow paths within fuel group
                 .data(strokes)                                              // Bind stroke data
                 .join('path')
-                .attr('class', (d: any) => `flow animate ${d.fuel} ${d.box} flow-path`)  // CSS classes
+                .attr('class', (d: any) => `evs-flow evs-animate evs-${d.fuel} evs-${d.box} evs-flow-path`)  // CSS classes
                 .attr('d', (d: any) => this.parseLineData(d))     // Set path geometry
                 .attr('stroke-width', (d: any) => d.stroke > 0 ? d.stroke + this.configService.BLEED : 0)  // Visual thickness
                 .attr('data-fuel', (d: any) => d.fuel)         // Data attribute for fuel identification
@@ -394,7 +394,7 @@ export class RenderingService {
                     const mouseY = event?.pageY || 0;
 
                     // TOOLTIP POSITIONING & CONTENT: Set HTML content and position
-                    tooltip.html(`${fuelName} → ${sectorName}<div class='fuel_value'>${value}</div>`)
+                    tooltip.html(`${fuelName} → ${sectorName}<div class='evs-fuel-value'>${value}</div>`)
                         .style('left', `${mouseX}px`)           // Horizontal position follows cursor
                         .style('top', `${mouseY - 28}px`);     // Vertical offset prevents cursor overlap
 
@@ -441,9 +441,9 @@ export class RenderingService {
         // Add fuel layers initialization
         // creates these groups and drawFlows() selects them
         for (const fuel of this.configService.FUELS) {
-            svg.append('g').attr('class', `fuel ${fuel.fuel}`);
+            svg.append('g').attr('class', `evs-fuel evs-${fuel.fuel}`);
         }
-        svg.append('g').attr('class', 'fuel waste');
+        svg.append('g').attr('class', 'evs-fuel evs-waste');
 
         // Draw title with header information
         this.drawHeader();
@@ -459,7 +459,7 @@ export class RenderingService {
      * Highlight specific fuel flows
      */
     public highlightFuel(svg: D3SVGSelection, fuelName: string): void {
-        svg.selectAll('.flow')
+        svg.selectAll('.evs-flow')
             .style('opacity', function (this: any) {
                 const fuel = d3.select(this).attr('data-fuel');
                 return fuel === fuelName ? 1.0 : 0.3;
@@ -470,7 +470,7 @@ export class RenderingService {
      * Reset highlighting
      */
     public resetHighlight(svg: D3SVGSelection): void {
-        svg.selectAll('.flow')
+        svg.selectAll('.evs-flow')
             .style('opacity', function (this: any) {
                 const fuel = d3.select(this).attr('data-fuel');
                 return fuel === 'waste' ? 0.6 : 0.8;

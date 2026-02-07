@@ -496,11 +496,11 @@ export default class Sankey {
         // Create tooltip element for interactive hover information
         this.tooltip = d3.select('body')
             .append('div')
-            .attr('class', 'tooltip')
+            .attr('class', 'evs-tooltip')
             .style('opacity', 0) as D3DivSelection;
 
         // Create main SVG element for chart rendering
-        this.svg = d3.select('.sankey')
+        this.svg = d3.select('.evs-us-energy-sankey-wrapper .evs-sankey')
             .append('svg')
             .attr('id', 'chart')
             .attr('width', this.options.width || config.WIDTH)
@@ -517,9 +517,9 @@ export default class Sankey {
         const lastYear = this.services.dataService!.lastYear!;
 
         let html = `
-        <div class="title_container">
-            <div class="header-content">
-                <div class="header-logo">
+        <div class="evs-sankey evs-title-container">
+            <div class="evs-header-content">
+                <div class="evs-header-logo">
                     <a href="https://www.rdcep.org/" target="_blank">
                         <img src="https://images.squarespace-cdn.com/content/v1/54dcfad0e4b0eaff5e0068bf/1446137765478-FX9WM00VV1LWAFUJRZBI/rdcep+sig2.png"
                         alt="The Center for Robust Decision-making on Climate and Energy Policy (RDCEP)"
@@ -527,67 +527,67 @@ export default class Sankey {
                     </a>
                 </div>
                 
-                <div class="header-main">
-                    <div class="header-title-section">
-                        <h1 class="main-title">${country} energy usage</h1>
-                        <div class="energy-usage-overlay">
+                <div class="evs-header-main">
+                    <div class="evs-header-title-section">
+                        <h1 class="evs-main-title">${country} energy usage</h1>
+                        <div class="evs-energy-usage-overlay">
                             <!-- SVG overlay for energy usage will be positioned here -->
                         </div>
                     </div>
                 </div>
                 
-                <div class="header-year">
-                    <div class="year-overlay">
+                <div class="evs-header-year">
+                    <div class="evs-year-overlay">
                         <!-- SVG overlay for animated year will be positioned here -->
                     </div>
                 </div>
                 
-                <div class="header-info">
-                    <div class="subtitle">Energy Transitions in ${country} History, ${firstYear}-${lastYear}</div>
-                    <div class="attribution">Suits, Matteson, and Moyer (2020)</div>
+                <div class="evs-header-info">
+                    <div class="evs-subtitle">Energy Transitions in ${country} History, ${firstYear}-${lastYear}</div>
+                    <div class="evs-attribution">Suits, Matteson, and Moyer (2020)</div>
                 </div>
                 
-                <div class="header-affiliation">
-                    <div class="affiliation-text">Center for Robust Decision-making on</div>
-                    <div class="affiliation-text">Climate and Energy Policy, UChicago</div>
+                <div class="evs-header-affiliation">
+                    <div class="evs-affiliation-text">Center for Robust Decision-making on</div>
+                    <div class="evs-affiliation-text">Climate and Energy Policy, UChicago</div>
                 </div>
             </div>
         </div>
-        <div class="us-energy-sankey-wrapper">
-            <div class="sankey" style="line-height: 0;"></div>
+        <div class="evs-us-energy-sankey-wrapper">
+            <div class="evs-sankey" style="line-height: 0;"></div>
     `;
 
         if (this.options.includeTimeline) {
             html += `
-        <div class="range-slider">
-          <div id="axisTop"></div>
+        <div class="evs-range-slider">
+          <div id="evs-axis-top"></div>
           <form style="margin: -5px;margin-left: 5px;">
-            <input id="rangeSlider" class="range-slider__range" type="range" 
+            <input id="evs-range-slider" class="evs-range-slider__range" type="range" 
                    value="${this.services.dataService!.firstYear}" min="${this.services.dataService!.firstYear}" max="${this.services.dataService!.lastYear}" name="foo">
-            <output id="dynamicYear" for="foo"></output>
+            <output id="evs-dynamic-year" for="foo"></output>
           </form>
           
-          <div id="testTick"></div>
+          <div id="evs-test-tick"></div>
           
-          <div class="container" style="margin-left: 10px;margin-top: 40px;margin-bottom: 15px;padding: 0;">
+          <div class="evs-container" style="margin-left: 10px;margin-top: 40px;margin-bottom: 15px;padding: 0;">
       `;
         }
 
         if (this.options.includeControls) {
             html += `
-        <div class="sidebar" style="width: 90px; float: left;">
-          <span id="play-button" class="playbutton" type="button"></span>
-          <button id="jButton" style="display:none"></button>
-          <button id="kButton" style="display:none"></button>
+        <div class="evs-sidebar" style="width: 90px; float: left;">
+          <span id="evs-play-button" class="evs-playbutton" type="button"></span>
+          <button id="evs-j-button" style="display:none"></button>
+          <button id="evs-k-button" style="display:none"></button>
         </div>
       `;
         }
 
         if (this.options.includeWasteToggle) {
             html += `
-        <div class="content switch_box box_1" style="float: right;">
-          <label id="lbl_waste_hide_show" for="waste_required">Hide electricity waste heat</label>
-          <input type="checkbox" id="waste_required" name="waste" class="switch_1">
+        <div class="evs-content evs-switch-box evs-box-1" style="float: right;">
+          <label id="evs-lbl-waste-hide-show" for="evs-waste-required">Hide electricity waste heat</label>
+          <input type="checkbox" id="evs-waste-required" name="waste" class="evs-switch-1">
         </div>
       `;
         }
@@ -608,10 +608,10 @@ export default class Sankey {
         this.container.innerHTML = html;
 
         // Set initial waste heat visibility state
-        const sankeyContainer = this.container.querySelector('.sankey');
+        const sankeyContainer = this.container.querySelector('.evs-us-energy-sankey-wrapper .evs-sankey');
         if (sankeyContainer) {
             if (!this.wasteHeatVisible) {
-                sankeyContainer.classList.add('waste-heat-hidden');
+                sankeyContainer.classList.add('evs-waste-heat-hidden');
             }
         }
     }
@@ -723,7 +723,7 @@ export default class Sankey {
     private setupEventListeners(): void {
         // Configure waste heat visibility toggle
         if (this.options.includeWasteToggle) {
-            const wasteToggle = document.getElementById('waste_required') as HTMLInputElement;
+            const wasteToggle = document.getElementById('evs-waste-required') as HTMLInputElement;
             if (wasteToggle) {
                 // Set initial toggle state based on configuration
                 wasteToggle.checked = this.wasteHeatVisible;
@@ -923,17 +923,17 @@ export default class Sankey {
         this.wasteHeatVisible = !this.wasteHeatVisible;
 
         // Update UI elements to reflect new state
-        const wasteToggle = document.getElementById('waste_required') as HTMLInputElement;
+        const wasteToggle = document.getElementById('evs-waste-required') as HTMLInputElement;
         if (wasteToggle) {
             wasteToggle.checked = this.wasteHeatVisible;
         }
 
-        const sankeyContainer = this.container.querySelector('.sankey');
+        const sankeyContainer = this.container.querySelector('.evs-us-energy-sankey-wrapper .evs-sankey');
         if (sankeyContainer) {
             if (this.wasteHeatVisible) {
-                sankeyContainer.classList.remove('waste-heat-hidden');
+                sankeyContainer.classList.remove('evs-waste-heat-hidden');
             } else {
-                sankeyContainer.classList.add('waste-heat-hidden');
+                sankeyContainer.classList.add('evs-waste-heat-hidden');
             }
         }
 

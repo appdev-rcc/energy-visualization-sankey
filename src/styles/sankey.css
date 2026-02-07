@@ -1,132 +1,133 @@
 /* US Energy Sankey - Core Styles */
 
-/* Typography */
-text, tspan {
+/* Typography - Scoped to evs-sankey wrapper */
+.evs-sankey text,
+.evs-sankey tspan {
     font-family: Fieldwork, Futura, sans-serif;
     font-size: 16px;
 }
 
 /* Flow Styles */
-.flow {
+.evs-flow {
     fill: none;
     stroke-opacity: 0.8;
 }
 
-.flow:hover {
+.evs-flow:hover {
     stroke-opacity: 0.9;
 }
 
-.flow.heat {
+.evs-flow.evs-heat {
     stroke: #98002e;
 }
 
-.flow.elec, .flow.waste.heat {
+.evs-flow.evs-elec, .evs-flow.evs-waste.evs-heat {
     stroke: #e49942;
 }
 
-.flow.waste {
+.evs-flow.evs-waste {
     stroke: #e49942;
     opacity: 0.4 !important;
 }
 
-.flow.solar {
+.evs-flow.evs-solar {
     stroke: #fed530;
 }
 
-.flow.nuclear {
+.evs-flow.evs-nuclear {
     stroke: #ca0813;
 }
 
-.flow.hydro {
+.evs-flow.evs-hydro {
     stroke: #0b24fb;
 }
 
-.flow.wind {
+.evs-flow.evs-wind {
     stroke: #901d8f;
 }
 
-.flow.geo {
+.evs-flow.evs-geo {
     stroke: #905a1c;
 }
 
-.flow.gas {
+.evs-flow.evs-gas {
     stroke: #4cabf2;
 }
 
-.flow.coal {
+.evs-flow.evs-coal {
     stroke: #000000;
 }
 
-.flow.bio {
+.evs-flow.evs-bio {
     stroke: #46be48;
 }
 
-.flow.petro {
+.evs-flow.evs-petro {
     stroke: #095f0b;
 }
 
 /* Box Styles */
-.box.sector {
+.evs-box.evs-sector {
     fill: #cccccc;
 }
 
-.box.solar {
+.evs-box.evs-solar {
     fill: #fed530;
 }
 
-.box.nuclear {
+.evs-box.evs-nuclear {
     fill: #ca0813;
 }
 
-.box.hydro {
+.evs-box.evs-hydro {
     fill: #0b24fb;
 }
 
-.box.wind {
+.evs-box.evs-wind {
     fill: #901d8f;
 }
 
-.box.geo {
+.evs-box.evs-geo {
     fill: #905a1c;
 }
 
-.box.gas {
+.evs-box.evs-gas {
     fill: #4cabf2;
 }
 
-.box.coal {
+.evs-box.evs-coal {
     fill: #000000;
 }
 
-.box.bio {
+.evs-box.evs-bio {
     fill: #46be48;
 }
 
-.box.petro {
+.evs-box.evs-petro {
     fill: #095f0b;
 }
 
 /* Other Elements */
-.maxline {
+.evs-maxline {
     stroke: #cccccc;
     stroke-width: 1px;
 }
 
-.bkgd {
+.evs-bkgd {
     fill: #000000;
 }
 
 /* Title Container - Responsive Header Layout */
-.title_container {
-    border-top: 2px solid #000000;
-    border-bottom: 1px solid #000000;
+.evs-title-container {
+    /*border-top: 2px solid #000000;*/
+    /*border-bottom: 1px solid #000000;*/
     position: relative;
     min-height: 58px;
     padding: 8px 16px;
     background: white;
 }
 
-.header-content {
+.evs-header-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -136,31 +137,31 @@ text, tspan {
 }
 
 /* Logo Section */
-.header-logo {
+.evs-header-logo {
     flex: 0 0 auto;
     min-width: 60px;
 }
 
-.header-logo img {
+.evs-header-logo img {
     max-height: 45px;
     height: auto;
     display: block;
 }
 
 /* Main Title Section - Contains title and energy usage */
-.header-main {
+.evs-header-main {
     flex: 1;
     text-align: center;
     min-width: 160px;
     position: relative;
 }
 
-.header-title-section {
+.evs-header-title-section {
     position: relative;
     min-height: 45px;
 }
 
-.main-title {
+.evs-main-title {
     font-family: Fieldwork, Futura, sans-serif;
     font-size: 1em;
     font-weight: normal;
@@ -170,7 +171,7 @@ text, tspan {
     margin-bottom: 2px;
 }
 
-.energy-usage-overlay {
+.evs-energy-usage-overlay {
     position: absolute;
     top: 22px;
     left: 0;
@@ -180,7 +181,7 @@ text, tspan {
 }
 
 /* Year Section - Separate section for year display */
-.header-year {
+.evs-header-year {
     flex: 1;
     min-width: 80px;
     height: 45px;
@@ -190,7 +191,7 @@ text, tspan {
     justify-content: center;
 }
 
-.year-overlay {
+.evs-year-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -200,13 +201,13 @@ text, tspan {
 }
 
 /* Info Section */
-.header-info {
+.evs-header-info {
     flex: 1.9;
     min-width: 160px;
     text-align: left;
 }
 
-.subtitle {
+.evs-subtitle {
     font-family: Fieldwork-HumThin, Futura, sans-serif;
     font-size: 1em;
     color: #000000;
@@ -215,7 +216,7 @@ text, tspan {
     margin-bottom: 2px;
 }
 
-.attribution {
+.evs-attribution {
     font-family: Fieldwork-HumThin, Futura, sans-serif;
     font-size: 1em;
     color: #000000;
@@ -224,13 +225,13 @@ text, tspan {
 }
 
 /* Affiliation Section */
-.header-affiliation {
+.evs-header-affiliation {
     flex: 1.7;
     text-align: center;
     min-width: 140px;
 }
 
-.affiliation-text {
+.evs-affiliation-text {
     font-family: Fieldwork-HumThin, Futura, sans-serif;
     font-size: 1em;
     color: #000000;
@@ -239,33 +240,33 @@ text, tspan {
 }
 
 /* SVG Overlay Styles */
-.energy-svg-overlay,
-.year-svg-overlay {
+.evs-energy-svg-overlay,
+.evs-year-svg-overlay {
     z-index: 10;
 }
 
-.energy-svg-overlay text,
-.year-svg-overlay text {
+.evs-energy-svg-overlay text,
+.evs-year-svg-overlay text {
     font-family: Fieldwork, Futura, sans-serif;
     fill: black;
 }
 
 /* Legacy SVG styles for compatibility */
-.title_container svg {
+.evs-title-container svg {
     font-size: 15px;
 }
 
-.title_container .title {
+.evs-title-container .evs-title {
     font-size: 1em;
     fill: black;
 }
 
-.title_container .title .unit {
+.evs-title-container .evs-title .evs-unit {
     font-size: .9em;
     font-weight: bold;
 }
 
-.title_container .title .year {
+.evs-title-container .evs-title .evs-year {
     font-size: 3.1em;
     font-weight: bold;
     clear: left;
@@ -275,94 +276,94 @@ text, tspan {
 
 /* Mobile Responsive Design */
 @media (max-width: 1024px) {
-    .header-content {
+    .evs-header-content {
         gap: 15px;
     }
 
-    .main-title {
+    .evs-main-title {
         font-size: 0.9em;
     }
 
-    .header-logo {
+    .evs-header-logo {
         min-width: 50px;
     }
 
-    .header-main,
-    .header-year,
-    .header-info,
-    .header-affiliation {
+    .evs-header-main,
+    .evs-header-year,
+    .evs-header-info,
+    .evs-header-affiliation {
         flex: 1;
         min-width: 120px;
     }
 
-    .year-svg-overlay text {
+    .evs-year-svg-overlay text {
         font-size: 2.8em !important;
     }
 
-    .subtitle, .attribution, .affiliation-text {
+    .evs-subtitle, .evs-attribution, .evs-affiliation-text {
         font-size: 0.9em;
     }
 }
 
 @media (max-width: 768px) {
-    .title_container {
+    .evs-title-container {
         padding: 6px 12px;
     }
 
-    .header-content {
+    .evs-header-content {
         gap: 10px;
     }
 
-    .header-logo {
+    .evs-header-logo {
         min-width: 40px;
     }
 
-    .header-logo img {
+    .evs-header-logo img {
         max-height: 35px;
     }
 
-    .main-title {
+    .evs-main-title {
         font-size: 0.8em;
     }
 
-    .header-main,
-    .header-year,
-    .header-info,
-    .header-affiliation {
+    .evs-header-main,
+    .evs-header-year,
+    .evs-header-info,
+    .evs-header-affiliation {
         flex: 1;
         min-width: 100px;
     }
 
-    .header-year {
+    .evs-header-year {
         height: 40px;
     }
 
-    .year-svg-overlay text {
+    .evs-year-svg-overlay text {
         font-size: 2.5em !important;
     }
 
-    .energy-svg-overlay text {
+    .evs-energy-svg-overlay text {
         font-size: 0.8em !important;
     }
 
-    .subtitle, .attribution, .affiliation-text {
+    .evs-subtitle, .evs-attribution, .evs-affiliation-text {
         font-size: 0.8em;
     }
 }
 
 @media (max-width: 600px) {
-    .header-content {
+    .evs-header-content {
         flex-wrap: wrap;
         gap: 8px;
     }
 
-    .header-main {
+    .evs-header-main {
         order: 1;
         flex: 1 1 100%;
         margin-bottom: 8px;
     }
 
-    .header-year {
+    .evs-header-year {
         order: 2;
         flex: 1 1 100%;
         margin-bottom: 8px;
@@ -370,29 +371,29 @@ text, tspan {
         height: 50px;
     }
 
-    .header-logo {
+    .evs-header-logo {
         order: 3;
         flex: 1 1 50%;
     }
 
-    .header-info {
+    .evs-header-info {
         order: 4;
         flex: 1 1 100%;
         margin-bottom: 8px;
     }
 
-    .header-affiliation {
+    .evs-header-affiliation {
         order: 5;
         flex: 1 1 50%;
         text-align: left;
     }
 
-    .main-title {
+    .evs-main-title {
         text-align: center;
         margin-bottom: 5px;
     }
 
-    .energy-usage-overlay {
+    .evs-energy-usage-overlay {
         position: relative;
         top: 0;
         text-align: center;
@@ -401,23 +402,23 @@ text, tspan {
 }
 
 /* Totals */
-.total.sector {
+.evs-total.evs-sector {
     font-size: 0.7em;
     font-weight: bold;
 }
 
-.total.waste-level {
+.evs-total.evs-waste-level {
     fill: #e49942;
     opacity: 0.4;
 }
 
 /* Visibility */
-.hidden {
+.evs-hidden {
     visibility: hidden;
 }
 
 /* Tooltip */
-.tooltip {
+.evs-tooltip {
     color: #000000;
     position: absolute;
     text-align: justify;
@@ -429,22 +430,22 @@ text, tspan {
     z-index: 3;
 }
 
-.fuel_value {
+.evs-fuel-value {
     text-align: center;
     vertical-align: middle;
 }
 
 /* Waste Heat Visibility Control */
-.waste-heat-hidden .flow.waste {
+.evs-waste-heat-hidden .evs-flow.evs-waste {
     display: none !important;
 }
 
-.waste-heat-hidden .total.waste-level {
+.evs-waste-heat-hidden .evs-total.evs-waste-level {
     display: none !important;
 }
 
 /* Smooth transition for waste heat toggle (optional) */
-.flow.waste,
-.total.waste-level {
+.evs-flow.evs-waste,
+.evs-total.evs-waste-level {
     transition: opacity 0.3s ease;
 }

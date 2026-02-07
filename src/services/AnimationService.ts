@@ -135,7 +135,7 @@ export class AnimationService {
     private setupTimelineControls(): void {
         // Range slider event handler
         const animationServiceRef = this; // Capture reference for closure
-        d3.select('#rangeSlider').on('input', function (this: any) {
+        d3.select('#evs-range-slider').on('input', function (this: any) {
             const rangeElement = this as HTMLInputElement; // 'this' is the slider element
             const value = parseFloat(rangeElement.value);
 
@@ -147,29 +147,29 @@ export class AnimationService {
         });
 
         // Create timeline sliders
-        const rangeSliderElement = document.getElementById('rangeSlider');
+        const rangeSliderElement = document.getElementById('evs-range-slider');
         this.sliderWidth = rangeSliderElement ?
             rangeSliderElement.getBoundingClientRect().width : 1200;
 
         // Top year labels
-        const svgTopYear = d3.select('#axisTop')
+        const svgTopYear = d3.select('#evs-axis-top')
             .style('margin', '-5px')
             .style('margin-left', '5px')
             .append('svg')
-            .attr('id', 'sliderYear')
+            .attr('id', 'evs-slider-year')
             .attr('width', this.sliderWidth)
             .attr('height', 40)
             .attr('preserveAspectRatio', 'xMinYMin meet')
             .attr('viewBox', `0 0 ${this.sliderWidth} 40`);
 
         // Bottom tick marks
-        const svgTick = d3.select('#testTick')
+        const svgTick = d3.select('#evs-test-tick')
             .style('height', '15px')
             .style('margin', '-5px')
             .style('margin-top', '-7px')
             .style('margin-left', '5px')
             .append('svg')
-            .attr('id', 'slider')
+            .attr('id', 'evs-slider')
             .attr('width', this.sliderWidth)
             .attr('height', 50)
             .attr('preserveAspectRatio', 'xMinYMin meet')
@@ -291,7 +291,7 @@ export class AnimationService {
                 animationServiceRef.setYear(year);
 
                 // Update slider
-                const rangeSlider = d3.select('#rangeSlider').node() as HTMLInputElement;
+                const rangeSlider = d3.select('#evs-range-slider').node() as HTMLInputElement;
                 if (rangeSlider) {
                     rangeSlider.focus();
                     rangeSlider.value = year.toString();
@@ -304,7 +304,7 @@ export class AnimationService {
                     animationServiceRef.pause();
                 }
 
-                d3.select("#play-button").classed("playbutton", true);
+                d3.select("#evs-play-button").classed("evs-playbutton", true);
 
                 // Show milestone dialog
                 const yearData = animationServiceRef.dataService.getYearData(year);
@@ -425,7 +425,7 @@ export class AnimationService {
      * Set up play/pause button controls
      */
     private setupPlayControls(): void {
-        const playButton = document.getElementById('play-button');
+        const playButton = document.getElementById('evs-play-button');
         if (!playButton) return;
 
         playButton.addEventListener('click', () => {
@@ -437,7 +437,7 @@ export class AnimationService {
         });
 
         // Set initial state
-        playButton.className = 'playbutton';
+        playButton.className = 'evs-playbutton';
         this.state.isAnimating = false;
     }
 
@@ -445,7 +445,7 @@ export class AnimationService {
      * Set up year display element
      */
     private setupYearDisplay(): void {
-        const yearOutput = document.getElementById('dynamicYear') as HTMLOutputElement;
+        const yearOutput = document.getElementById('evs-dynamic-year') as HTMLOutputElement;
         if (yearOutput) {
             yearOutput.textContent = this.dataService.years[0].toString();
         }
@@ -493,7 +493,7 @@ export class AnimationService {
 
         // UI SYNCHRONIZATION: Update range slider position to reflect new state
         // Critical for maintaining UI consistency when year is changed programmatically
-        const rangeSlider = document.getElementById('rangeSlider') as HTMLInputElement;
+        const rangeSlider = document.getElementById('evs-range-slider') as HTMLInputElement;
         if (rangeSlider) {
             rangeSlider.value = year.toString();
         }
@@ -532,13 +532,13 @@ export class AnimationService {
         const graphNest = this.graphNest;
 
         // Hide/show labels based on data values
-        svg.selectAll('.label')
-            .classed('hidden', function (this: any) {
+        svg.selectAll('.evs-label')
+            .classed('evs-hidden', function (this: any) {
                 const d = d3.select(this);
-                if (d.classed('sector')) {
+                if (d.classed('evs-sector')) {
                     const sector = d.attr('data-sector');
                     return graphs[yearIndex]?.totals[sector] <= 0;
-                } else if (d.classed('fuel')) {
+                } else if (d.classed('evs-fuel')) {
                     const fuel = d.attr('data-fuel');
                     return graphs[yearIndex]?.totals[fuel] <= 0;
                 }
@@ -551,13 +551,13 @@ export class AnimationService {
         const summaryCalculationService = this.summaryCalculationService;
         const years = this.dataService.years;
 
-        d3.selectAll('.animate')
+        d3.selectAll('.evs-animate')
             .on('mouseover', function (this: any, event: any) {
                 if (!tooltip) return;
 
                 const d = d3.select(this);
 
-                if (d.classed('flow')) {
+                if (d.classed('evs-flow')) {
                     const fuel = d.attr('data-fuel');
                     const sector = d.attr('data-sector');
 
@@ -577,11 +577,11 @@ export class AnimationService {
                         const mouseX = event?.pageX || 0;
                         const mouseY = event?.pageY || 0;
 
-                        tooltip.html(`${fuelName} → ${sectorName}<div class='fuel_value'>${value}</div>`)
+                        tooltip.html(`${fuelName} → ${sectorName}<div class='evs-fuel-value'>${value}</div>`)
                             .style('left', `${mouseX}px`)
                             .style('top', `${mouseY - 35}px`);
                     }
-                } else if (d.classed('fuel') && !d.classed('elec') && !d.classed('heat')) {
+                } else if (d.classed('evs-fuel') && !d.classed('evs-elec') && !d.classed('evs-heat')) {
                     if (!tooltip) return;
 
                     tooltip.attr("style", "");
@@ -616,7 +616,7 @@ export class AnimationService {
 
                 activeTransition
                     .attr('d', function (this: any) {
-                        if (d.classed('flow')) {
+                        if (d.classed('evs-flow')) {
                             const fuel = d.attr('data-fuel');
                             const sector = d.attr('data-sector');
 
@@ -632,7 +632,7 @@ export class AnimationService {
                         return d.attr('d');
                     })
                     .attr('stroke-width', function (this: any) {
-                        if (d.classed('flow')) {
+                        if (d.classed('evs-flow')) {
                             // access stroke value directly
                             let s = graphNest.strokes[years[yearIndex]][d.attr('data-fuel')][d.attr('data-sector')] as unknown as number;
                             if (s > 0) {
@@ -643,21 +643,21 @@ export class AnimationService {
                         return d.attr('stroke-width');
                     })
                     .attr('y', function (this: any) {
-                        if (d.classed('box') && d.classed('fuel')) {
+                        if (d.classed('evs-box') && d.classed('evs-fuel')) {
                             return graphNest.tops[years[yearIndex]][d.attr('data-fuel')];
-                        } else if (d.classed('label') && d.classed('fuel')) {
+                        } else if (d.classed('evs-label') && d.classed('evs-fuel')) {
                             return graphNest.tops[years[yearIndex]][d.attr('data-fuel')] - 5;
                         }
                         return d.attr('y');
                     })
                     .attr('height', function (this: any) {
-                        if (d.classed('box') && d.classed('sector')) {
+                        if (d.classed('evs-box') && d.classed('evs-sector')) {
                             return graphNest.heights[years[yearIndex]][d.attr('data-sector')];
                         }
                         return d.attr('height');
                     })
                     .attr('data-value', function (this: any) {
-                        if (d.classed('label') && d.classed('fuel') && !d.classed('elec') && !d.classed('heat')) {
+                        if (d.classed('evs-label') && d.classed('evs-fuel') && !d.classed('evs-elec') && !d.classed('evs-heat')) {
                             return graphs[yearIndex].totals[d.attr('data-fuel')];
                         }
                         return d.attr('data-value');
@@ -665,7 +665,7 @@ export class AnimationService {
                     .tween('text', function (this: any): any {
                         const that = this as HTMLElement;
 
-                        if (d.classed('year')) {
+                        if (d.classed('evs-year')) {
                             const a = parseInt(that.textContent || '0');
                             const b = years[yearIndex];
                             return function (t: number) {
@@ -673,7 +673,7 @@ export class AnimationService {
                                 that.setAttribute('data-value', v.toString());
                                 that.textContent = Math.round(v).toString();
                             };
-                        } else if (d.classed('year-total')) {
+                        } else if (d.classed('evs-year-total')) {
                             // calculate total energy usage per capita
                             return function (t: number) {
                                 const yearSums = summaryCalculationService.yearSums!;
@@ -681,7 +681,7 @@ export class AnimationService {
                                 that.setAttribute('data-value', sum_value.toString());
                                 that.textContent = `${Math.round(sum_value)} W/capita`;
                             };
-                        } else if (d.classed('waste-level')) {
+                        } else if (d.classed('evs-waste-level')) {
                             // animate waste heat values
                             const a = parseFloat(that.getAttribute('data-value') || '0');
                             const b = graphNest.waste[years[yearIndex]]?.[that.getAttribute('data-sector') || ''] || 0;
@@ -690,7 +690,7 @@ export class AnimationService {
                                 that.setAttribute('data-value', v.toString());
                                 that.textContent = (graphCalculationService.sigfig2(v) || 0).toString();
                             };
-                        } else if (d.classed('total')) {
+                        } else if (d.classed('evs-total')) {
                             const a = parseFloat(that.getAttribute('data-value') || '0');
                             const b = graphs[yearIndex].totals[that.getAttribute('data-sector') || ''] || 0;
                             return function (t: number) {
@@ -712,8 +712,8 @@ export class AnimationService {
      * Updates the position and content of the year indicator above the slider
      */
     private updateSliderIndicator(): void {
-        const slider = document.getElementById("rangeSlider") as HTMLInputElement;
-        const indicator = document.getElementById('dynamicYear') as HTMLElement;
+        const slider = document.getElementById("evs-range-slider") as HTMLInputElement;
+        const indicator = document.getElementById('evs-dynamic-year') as HTMLElement;
 
         if (!slider || !indicator) return;
 
@@ -759,7 +759,7 @@ export class AnimationService {
     }
 
     private updateYearDisplay(year: number): void {
-        const yearOutput = document.getElementById('dynamicYear') as HTMLOutputElement;
+        const yearOutput = document.getElementById('evs-dynamic-year') as HTMLOutputElement;
         if (yearOutput) {
             yearOutput.textContent = year.toString();
         }
@@ -801,9 +801,9 @@ export class AnimationService {
         this.state.isAnimating = true;
 
         // UI FEEDBACK: Update play button visual state for user clarity
-        const playButton = document.getElementById('play-button');
+        const playButton = document.getElementById('evs-play-button');
         if (playButton) {
-            playButton.className = 'playpaused';                    // Visual state: playing → show pause icon
+            playButton.className = 'evs-playpaused';                    // Visual state: playing → show pause icon
         }
 
         // ANIMATION TIMER INITIALIZATION: Start automated year progression
@@ -855,9 +855,9 @@ export class AnimationService {
         this.state.isAnimating = false;
 
         // UI FEEDBACK: Restore play button visual state
-        const playButton = document.getElementById('play-button');
+        const playButton = document.getElementById('evs-play-button');
         if (playButton) {
-            playButton.className = 'playbutton';                    // Visual state: paused → show play icon
+            playButton.className = 'evs-playbutton';                    // Visual state: paused → show play icon
         }
 
         // TIMER CLEANUP: Stop animation interval and prevent memory leaks

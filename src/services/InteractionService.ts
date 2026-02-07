@@ -176,7 +176,7 @@ export class InteractionService {
 
             // Handle element hovering
             const target = event.target as Element;
-            if (target && (target.classList.contains('flow') || target.classList.contains('box'))) {
+            if (target && (target.classList.contains('evs-flow') || target.classList.contains('evs-box'))) {
                 this.handleElementHover(target, event);
             }
         };
@@ -463,7 +463,7 @@ export class InteractionService {
      * - Event delegation pattern (single handler)
      */
     private setupSliderInteractions(): void {
-        const rangeSlider = document.getElementById('rangeSlider') as HTMLInputElement;
+        const rangeSlider = document.getElementById('evs-range-slider') as HTMLInputElement;
         if (!rangeSlider) return;
 
         const sliderInputHandler = (event: Event) => {
@@ -528,7 +528,7 @@ export class InteractionService {
      */
     private setupButtonInteractions(): void {
         // Play/pause button - Primary animation control
-        const playButton = document.getElementById('play-button');
+        const playButton = document.getElementById('evs-play-button');
         if (playButton) {
             const playButtonHandler = (event: Event) => {
                 event.preventDefault(); // Prevent default button behavior
@@ -549,7 +549,7 @@ export class InteractionService {
                     timestamp: Date.now(),
                     source: 'InteractionService',
                     data: {
-                        buttonId: 'play-button',
+                        buttonId: 'evs-play-button',
                         action: this.animationControlService.isPlaying() ? 'play' : 'pause'
                     }
                 });
@@ -647,14 +647,14 @@ export class InteractionService {
 
         // Add accessibility to controls - Control Semantic Enhancement
         // Range slider accessibility - Timeline control semantics
-        const rangeSlider = document.getElementById('rangeSlider');
+        const rangeSlider = document.getElementById('evs-range-slider');
         if (rangeSlider) {
             rangeSlider.setAttribute('aria-label', 'Select year for energy data visualization');
             rangeSlider.setAttribute('role', 'slider'); // Explicit slider semantics
         }
 
         // Play button accessibility - Animation control semantics
-        const playButton = document.getElementById('play-button');
+        const playButton = document.getElementById('evs-play-button');
         if (playButton) {
             playButton.setAttribute('aria-label', 'Play or pause animation');
             playButton.setAttribute('role', 'button'); // Explicit button semantics
@@ -709,7 +709,7 @@ export class InteractionService {
             timestamp: Date.now(),
             source: 'InteractionService',
             data: {
-                elementType: element.classList.contains('flow') ? 'flow' : 'box', // Element classification
+                elementType: element.classList.contains('evs-flow') ? 'flow' : 'box', // Element classification
                 fuel: element.getAttribute('data-fuel'),     // Energy source identification
                 sector: element.getAttribute('data-sector'), // Consumption sector identification
                 mousePosition: {x: event.clientX, y: event.clientY} // Coordinates for tooltip positioning
@@ -763,7 +763,7 @@ export class InteractionService {
             timestamp: Date.now(),
             source: 'InteractionService',
             data: {
-                elementType: element.classList.contains('flow') ? 'flow' : 'box', // Element classification
+                elementType: element.classList.contains('evs-flow') ? 'flow' : 'box', // Element classification
                 fuel: element.getAttribute('data-fuel'),     // Energy source identification
                 sector: element.getAttribute('data-sector'), // Consumption sector identification
                 mousePosition: {x: event.clientX, y: event.clientY} // Click coordinates for UI positioning

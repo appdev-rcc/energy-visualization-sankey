@@ -1,7 +1,7 @@
 /* US Energy Sankey - Controls Styles */
 
 /* Range Slider */
-.range-slider {
+.evs-range-slider {
     width: 100%;
     margin-top: 5px;
     position: relative;
@@ -9,7 +9,14 @@
     padding-top: 40px;
 }
 
-.range-slider__range {
+/* Axis text styling - matches global text style */
+.evs-range-slider text,
+.evs-range-slider tspan {
+    font-family: Fieldwork, Futura, sans-serif;
+    font-size: 16px;
+}
+
+.evs-range-slider__range {
     -webkit-appearance: none;
     width: 100%;
     border-radius: 5px;
@@ -18,11 +25,11 @@
     margin: 0;
 }
 
-.range-slider__range:first-child {
+.evs-range-slider__range:first-child {
     background: #d7dcdf;
 }
 
-.range-slider__range::-webkit-slider-thumb {
+.evs-range-slider__range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 11px;
@@ -34,7 +41,7 @@
     transition: background 0.15s ease-in-out;
 }
 
-.range-slider__range::-moz-range-thumb {
+.evs-range-slider__range::-moz-range-thumb {
     width: 11px;
     height: 11px;
     border: 0;
@@ -46,7 +53,7 @@
 }
 
 /* Dynamic Year Display */
-#dynamicYear {
+#evs-dynamic-year {
     color: black;
     position: absolute;
     height: 25px;
@@ -64,7 +71,7 @@
 }
 
 /* Add downward arrow pointing to slider */
-#dynamicYear::after {
+#evs-dynamic-year::after {
     content: '';
     position: absolute;
     top: 100%;
@@ -78,17 +85,17 @@
 }
 
 /* Play/Pause Button */
-#play-button {
+#evs-play-button {
     border-radius: 0;
     display: block;
     height: 0;
 }
 
-#play-button:hover {
+#evs-play-button:hover {
     background: transparent !important;
 }
 
-#play-button.playbutton {
+#evs-play-button.evs-playbutton {
     outline: 0;
     background: transparent;
     border-color: transparent transparent transparent #202020;
@@ -98,7 +105,7 @@
     border-width: 13px 0 13px 20px;
 }
 
-#play-button.playpaused {
+#evs-play-button.evs-playpaused {
     outline: 0;
     background: transparent;
     height: 26px;
@@ -109,12 +116,12 @@
     border-width: 0px 0 0px 20px;
 }
 
-#play-button.playbutton:hover {
+#evs-play-button.evs-playbutton:hover {
     border-color: transparent transparent transparent #404040;
 }
 
 /* Waste Heat Toggle Switch */
-.switch_box {
+.evs-switch-box {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -130,11 +137,11 @@
     flex: 1;
 }
 
-.box_1 {
+.evs-box-1 {
     background: #ffffff;
 }
 
-input[type="checkbox"].switch_1 {
+input[type="checkbox"].evs-switch-1 {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -149,11 +156,11 @@ input[type="checkbox"].switch_1 {
     transition: all .2s ease-in-out;
 }
 
-input[type="checkbox"].switch_1:checked {
+input[type="checkbox"].evs-switch-1:checked {
     background: #e49942;
 }
 
-input[type="checkbox"].switch_1:after {
+input[type="checkbox"].evs-switch-1:after {
     position: absolute;
     content: "";
     width: 1.5em;
@@ -169,30 +176,30 @@ input[type="checkbox"].switch_1:after {
     transition: all .2s ease-in-out;
 }
 
-input[type="checkbox"].switch_1:checked:after {
+input[type="checkbox"].evs-switch-1:checked:after {
     left: calc(100% - 1.5em);
 }
 
 /* Hover effects for better interactivity */
-input[type="checkbox"].switch_1:hover {
+input[type="checkbox"].evs-switch-1:hover {
     background: #555555;
 }
 
-input[type="checkbox"].switch_1:checked:hover {
+input[type="checkbox"].evs-switch-1:checked:hover {
     background: #e49942;
 }
 
 /* Focus states for accessibility */
-input[type="checkbox"].switch_1:focus {
+input[type="checkbox"].evs-switch-1:focus {
     box-shadow: 0 0 0 3px #F5DBBC;
 }
 
 /* Milestone Tick Markers */
-#testTick .tick text {
+#evs-test-tick .tick text {
     cursor: pointer;
 }
 
-#testTick .tick text:hover {
+#evs-test-tick .tick text:hover {
     color: grey;
     transition: color 250ms;
 }
