@@ -723,7 +723,7 @@ export class AnimationService {
         const maxYear = this.dataService.lastYear;
 
         // Calculate precise positioning
-        const position = this.calculateIndicatorPosition(slider, currentYear, minYear, maxYear);
+        const position = this.calculateIndicatorPosition(slider, indicator, currentYear, minYear, maxYear);
 
         // Apply positioning and content
         this.applyIndicatorPosition(indicator, position, currentYear);
@@ -731,20 +731,31 @@ export class AnimationService {
 
     private calculateIndicatorPosition(
         slider: HTMLInputElement,
+        indicator: HTMLElement,
         currentYear: number,
         minYear: number,
         maxYear: number
     ): number {
         const sliderRect = slider.getBoundingClientRect();
-        const progress = (currentYear - minYear) / (maxYear - minYear);
+        const offsetParent = indicator.offsetParent as HTMLElement | null;
+        // parentLeft is the viewport-relative left edge of whatever element the indicator's
+        // `left` CSS property is measured from. This varies between plain HTML and framework
+        // environments (Nuxt, Vue, etc.) depending on which ancestor has position != static.
+        const parentLeft = offsetParent ? offsetParent.getBoundingClientRect().left : 0;
 
-        // Account for thumb dimensions (11px width from CSS)
+        const progress = (currentYear - minYear) / (maxYear - minYear);
         const thumbWidth = 11;
         const effectiveWidth = sliderRect.width - thumbWidth;
-        const thumbCenter = (thumbWidth / 2) + (progress * effectiveWidth);
 
-        // Center 54px indicator over thumb
-        return thumbCenter - 28; // 54px / 2 = 26px
+        // Compute thumb center in viewport coordinates, then translate to offset-parent space.
+        // Using getBoundingClientRect differences means scroll position cancels out automatically.
+        const thumbCenterViewport = sliderRect.left + (thumbWidth / 2) + (progress * effectiveWidth);
+
+        // Use the actual rendered width so centering is correct regardless of whether the host
+        // project applies box-sizing: border-box (e.g. Nuxt/Vue resets) or content-box (plain HTML).
+        // offsetWidth always reflects the true painted width including padding.
+        const indicatorWidth = indicator.offsetWidth;
+        return (thumbCenterViewport - parentLeft) - (indicatorWidth / 2);
     }
 
     private applyIndicatorPosition(
