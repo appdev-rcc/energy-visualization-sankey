@@ -179,7 +179,7 @@ export class AnimationService {
         this.setupMilestones(svgTopYear, svgTick);
 
         // Initialize slider range and position
-        const rangeSlider = document.getElementById('rangeSlider') as HTMLInputElement;
+        const rangeSlider = document.getElementById('evs-range-slider') as HTMLInputElement;
         if (rangeSlider) {
             rangeSlider.min = this.dataService.firstYear.toString();
             rangeSlider.max = this.dataService.lastYear.toString();
@@ -744,7 +744,7 @@ export class AnimationService {
         const thumbCenter = (thumbWidth / 2) + (progress * effectiveWidth);
 
         // Center 54px indicator over thumb
-        return thumbCenter - 26; // 54px / 2 = 26px
+        return thumbCenter - 28; // 54px / 2 = 26px
     }
 
     private applyIndicatorPosition(

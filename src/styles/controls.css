@@ -1,4 +1,4 @@
-/* US Energy Sankey - Controls Styles */
+/* Energy Sankey - Controls Styles */
 
 /* Range Slider */
 .evs-range-slider {
@@ -6,13 +6,13 @@
     margin-top: 5px;
     position: relative;
     overflow: visible;
-    padding-top: 40px;
+    /*padding-top: 40px;*/
 }
 
 /* Axis text styling - matches global text style */
 .evs-range-slider text,
 .evs-range-slider tspan {
-    font-family: Fieldwork, Futura, sans-serif;
+    /*font-family: Fieldwork, Futura, sans-serif;*/
     font-size: 16px;
 }
 
@@ -56,14 +56,14 @@
 #evs-dynamic-year {
     color: black;
     position: absolute;
-    height: 25px;
+    /*height: 25px;*/
     width: 50px;
     text-align: center;
     border: 1px solid black;
     border-radius: 3px;
     display: block;
     font-size: 16px;
-    top: 40%;
+    top: 0;
     /*bottom: 100%;*/
     background: white;
     padding: 3px 5px;
@@ -138,7 +138,7 @@
 }
 
 .evs-box-1 {
-    background: #ffffff;
+    /*background: #ffffff;*/
 }
 
 input[type="checkbox"].evs-switch-1 {
@@ -202,4 +202,8 @@ input[type="checkbox"].evs-switch-1:focus {
 #evs-test-tick .tick text:hover {
     color: grey;
     transition: color 250ms;
+}
+
+#evs-lbl-waste-hide-show {
+    margin-right: 10px;
 }

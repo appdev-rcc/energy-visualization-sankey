@@ -569,7 +569,7 @@ export default class Sankey {
           
           <div id="evs-test-tick"></div>
           
-          <div class="evs-container" style="margin-left: 10px;margin-top: 40px;margin-bottom: 15px;padding: 0;">
+          <div class="evs-container" style="margin-left: 10px;margin-top: 15px;margin-bottom: 15px;padding: 0;">
       `;
         }
 

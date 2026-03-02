@@ -1,9 +1,9 @@
-/* US Energy Sankey - Core Styles */
+/* Energy Sankey - Core Styles */
 
 /* Typography - Scoped to evs-sankey wrapper */
 .evs-sankey text,
 .evs-sankey tspan {
-    font-family: Fieldwork, Futura, sans-serif;
+    /*font-family: Fieldwork, Futura, sans-serif;*/
     font-size: 16px;
 }
 
@@ -124,7 +124,7 @@
     position: relative;
     min-height: 58px;
     padding: 8px 16px;
-    background: white;
+    /*background: white;*/
 }
 
 .evs-header-content {
@@ -162,7 +162,7 @@
 }
 
 .evs-main-title {
-    font-family: Fieldwork, Futura, sans-serif;
+    /*font-family: Fieldwork, Futura, sans-serif;*/
     font-size: 1em;
     font-weight: normal;
     color: black;
@@ -208,7 +208,7 @@
 }
 
 .evs-subtitle {
-    font-family: Fieldwork-HumThin, Futura, sans-serif;
+    /*font-family: Fieldwork-HumThin, Futura, sans-serif;*/
     font-size: 1em;
     color: #000000;
     font-weight: bolder;
@@ -217,7 +217,7 @@
 }
 
 .evs-attribution {
-    font-family: Fieldwork-HumThin, Futura, sans-serif;
+    /*font-family: Fieldwork-HumThin, Futura, sans-serif;*/
     font-size: 1em;
     color: #000000;
     font-weight: normal;
@@ -232,7 +232,7 @@
 }
 
 .evs-affiliation-text {
-    font-family: Fieldwork-HumThin, Futura, sans-serif;
+    /*font-family: Fieldwork-HumThin, Futura, sans-serif;*/
     font-size: 1em;
     color: #000000;
     font-weight: normal;
@@ -247,7 +247,7 @@
 
 .evs-energy-svg-overlay text,
 .evs-year-svg-overlay text {
-    font-family: Fieldwork, Futura, sans-serif;
+    /*font-family: Fieldwork, Futura, sans-serif;*/
     fill: black;
 }
 

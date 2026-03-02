@@ -46,6 +46,9 @@ const baseConfig = {
                 compilerOptions: {
                     declaration: true,
                     declarationMap: true,
+                    sourceMap: true,
+                    inlineSourceMap: false,
+                    inlineSources: false,
                     declarationDir: './dist/types',
                     baseUrl: '.',
                     paths: {}
