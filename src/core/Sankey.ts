@@ -553,7 +553,7 @@ export default class Sankey {
                 </div>
             </div>
         </div>
-        <div class="evs-us-energy-sankey-wrapper">
+        <div class="evs-us-energy-sankey-wrapper" style="width: ${this.services['configurationService']?.WIDTH}px;">
             <div class="evs-sankey" style="line-height: 0;"></div>
     `;
 

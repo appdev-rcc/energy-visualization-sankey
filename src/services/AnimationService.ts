@@ -147,9 +147,7 @@ export class AnimationService {
         });
 
         // Create timeline sliders
-        const rangeSliderElement = document.getElementById('evs-range-slider');
-        this.sliderWidth = rangeSliderElement ?
-            rangeSliderElement.getBoundingClientRect().width : 1200;
+        this.sliderWidth = this.configService.WIDTH;
 
         // Top year labels
         const svgTopYear = d3.select('#evs-axis-top')
