@@ -31,5 +31,26 @@ export {
     DataValidationError
 } from './types/index';
 
+// Export the public event API types
+export type {
+    SankeyEventMap,
+    SankeyPublicEventType,
+    SankeyPublicEvent,
+    SankeyEventListener,
+    SankeyEventHandlers,
+    SankeyUnsubscribe,
+    SankeyElementType,
+    SankeyMousePosition,
+    SankeyReadyEventData,
+    SankeyErrorEventData,
+    SankeyYearChangedEventData,
+    SankeyAnimationEventData,
+    SankeySpeedChangedEventData,
+    SankeyElementInteractionEventData,
+    SankeyKeypressEventData,
+    SankeySliderEventData,
+    SankeyButtonEventData
+} from './core/types/public-events';
+
 // Export the main visualization class
 export {default as default} from './core/Sankey';

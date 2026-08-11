@@ -1,6 +1,7 @@
 import type {EnergyDataPoint} from '@/types';
 import {DataValidationError} from '@/types';
 import {EventBus} from '@/core/events/EventBus';
+import type {SankeyErrorEventData} from '@/core/types/public-events';
 import {Logger} from "@/utils/Logger";
 import {ConfigurationService} from "@/services/ConfigurationService";
 
@@ -135,15 +136,17 @@ export class DataValidationService {
             // Emit validation error event for error handling - Error Recovery Architecture
             // Enables centralized error handling and user notification systems
             // Marks validation errors as non-recoverable (require data fix)
+            const validationErrorData: SankeyErrorEventData = {
+                error: error instanceof Error ? error : new Error(String(error)),
+                context: 'data_validation',  // Error categorization for debugging
+                recoverable: false           // Validation errors require data correction
+            };
+
             this.eventBus.emit({
                 type: 'system.error',
                 timestamp: Date.now(),
                 source: 'DataValidationService',
-                data: {
-                    error: error instanceof Error ? error : new Error(String(error)),
-                    context: 'data_validation',  // Error categorization for debugging
-                    recoverable: false           // Validation errors require data correction
-                }
+                data: validationErrorData
             });
 
             // Re-throw error to maintain validation contract - Fail-Fast Pattern

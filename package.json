@@ -1,6 +1,6 @@
 {
   "name": "energy-visualization-sankey",
-  "version": "1.0.27",
+  "version": "1.1.0",
   "description": "A modern TypeScript library for creating interactive Sankey diagrams that visualize energy flows from sources to consumption sectors.",
   "keywords": [
     "sankey",
@@ -48,7 +48,7 @@
     "validate:quick": "npm run test:numerical",
     "validate:full": "npm run test:numerical && npm run build && npm run serve & sleep 3 && npm run test:visual && npm run test:performance && kill %1",
     "validate": "npm run validate:full",
-    "prepublishOnly": "npm run clean && npm run test:ci && npm run build"
+    "prepublishOnly": "npm run clean && npm run type-check && npm run test:ci && npm run build"
   },
   "dependencies": {
     "d3": "^7.8.5"
@@ -56,6 +56,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.23.0",
+    "@babel/preset-typescript": "^7.29.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",

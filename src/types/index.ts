@@ -19,6 +19,11 @@
  *
  */
 
+// Relative on purpose. The exact `@/types` alias entry is mis-rewritten by
+// tsc-alias to the public barrel, so alias imports reaching the declaration
+// surface are unsafe. Relative specifiers are never rewritten.
+import type {SankeyEventHandlers} from '../core/types/public-events';
+
 // Error types
 export class SankeyError extends Error {
     constructor(message: string, public code?: string) {
@@ -85,6 +90,17 @@ export interface SankeyOptions {
     readonly heatBoxY?: number;
     readonly loopAnimation?: boolean;
     readonly debugLogging?: boolean;
+
+    /**
+     * Event handlers registered before asynchronous initialization begins.
+     *
+     * Prefer this over `.on()` for lifecycle events. `system.ready` and
+     * `system.error` are produced during the initialization the constructor
+     * starts, and the event bus drops events that have no subscriber at emit
+     * time, so a subscription added later can miss them entirely. Interaction
+     * events can be attached either way.
+     */
+    readonly events?: SankeyEventHandlers;
 }
 
 // Mathematical structures

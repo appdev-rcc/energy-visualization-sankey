@@ -1,6 +1,11 @@
 import * as d3 from 'd3';
 import {GraphData, SankeyOptions} from '@/types';
 import {EventBus} from '@/core/events/EventBus';
+import type {
+    SankeyAnimationEventData,
+    SankeySpeedChangedEventData,
+    SankeyYearChangedEventData
+} from '@/core/types/public-events';
 import {SummaryService} from '@/services/calculation/SummaryService';
 import {GraphService} from '@/services/calculation/GraphService';
 import {Logger} from "@/utils/Logger";
@@ -505,16 +510,20 @@ export class AnimationService {
 
         // EVENT SYSTEM INTEGRATION: Notify other services of year change
         // Enables coordinated updates across the entire visualization system
+        // Annotated against the public payload type so that any drift between
+        // what is emitted and what SankeyEventMap advertises fails type-check.
+        const yearChangedData: SankeyYearChangedEventData = {
+            year, // New target year
+            previousYear, // Previous year for transition context
+            yearIndex, // Array index for efficient data access
+            isAnimating: this.state.isAnimating // Animation state for context
+        };
+
         this.eventBus.emit({
             type: 'year.changed',
             timestamp: Date.now(),
             source: 'AnimationControlService',
-            data: {
-                year, // New target year
-                previousYear, // Previous year for transition context
-                yearIndex, // Array index for efficient data access
-                isAnimating: this.state.isAnimating // Animation state for context
-            },
+            data: yearChangedData,
         });
     }
 
@@ -823,15 +832,17 @@ export class AnimationService {
 
         // EVENT SYSTEM INTEGRATION: Broadcast animation start to other services
         // Enables coordinated behavior across visualization components during playback
+        const startedData: SankeyAnimationEventData = {
+            isPlaying: true,
+            currentYear: this.getCurrentYear(), // Starting year for context
+            speed: this.state.speed // Playback speed for coordination
+        };
+
         this.eventBus.emit({
             type: 'animation.started',
             timestamp: Date.now(),
             source: 'AnimationControlService',
-            data: {
-                isPlaying: true,
-                currentYear: this.getCurrentYear(), // Starting year for context
-                speed: this.state.speed // Playback speed for coordination
-            },
+            data: startedData,
         });
     }
 
@@ -877,15 +888,17 @@ export class AnimationService {
 
         // EVENT SYSTEM INTEGRATION: Broadcast animation stop to other services
         // Enables coordinated pause behavior across visualization components
+        const stoppedData: SankeyAnimationEventData = {
+            isPlaying: false,
+            currentYear: this.getCurrentYear(), // Current position preserved
+            speed: this.state.speed // Speed settings maintained
+        };
+
         this.eventBus.emit({
             type: 'animation.stopped',
             timestamp: Date.now(),
             source: 'AnimationControlService',
-            data: {
-                isPlaying: false,
-                currentYear: this.getCurrentYear(), // Current position preserved
-                speed: this.state.speed // Speed settings maintained
-            }
+            data: stoppedData
         });
     }
 
@@ -927,13 +940,15 @@ export class AnimationService {
         }
 
         // Emit speed changed event
+        const speedChangedData: SankeySpeedChangedEventData = {
+            speed
+        };
+
         this.eventBus.emit({
             type: 'speed.changed',
             timestamp: Date.now(),
             source: 'AnimationControlService',
-            data: {
-                speed
-            }
+            data: speedChangedData
         });
 
         // Animation speed updated for timeline playback

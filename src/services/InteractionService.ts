@@ -1,4 +1,10 @@
 import {EventBus} from '@/core/events/EventBus';
+import type {
+    SankeyButtonEventData,
+    SankeyElementInteractionEventData,
+    SankeyKeypressEventData,
+    SankeySliderEventData
+} from '@/core/types/public-events';
 import {DataService} from "@/services/data/DataService";
 import {AnimationService} from "@/services/AnimationService";
 import {Logger} from "@/utils/Logger";
@@ -416,16 +422,18 @@ export class InteractionService {
         // Emit keyboard navigation event - Event-Driven Architecture Integration
         // Enables other services to react to keyboard interactions
         // Provides rich event context (key + modifiers) for advanced interactions
+        const keypressData: SankeyKeypressEventData = {
+            key,                    // Primary key pressed (normalized to lowercase)
+            ctrlKey: event.ctrlKey, // Enables Ctrl+key shortcuts
+            shiftKey: event.shiftKey, // Enables Shift+key shortcuts
+            altKey: event.altKey    // Enables Alt+key shortcuts (power user features)
+        };
+
         this.eventBus.emit({
             type: 'interaction.keypress',
             timestamp: Date.now(),
             source: 'InteractionService',
-            data: {
-                key,                    // Primary key pressed (normalized to lowercase)
-                ctrlKey: event.ctrlKey, // Enables Ctrl+key shortcuts
-                shiftKey: event.shiftKey, // Enables Shift+key shortcuts
-                altKey: event.altKey    // Enables Alt+key shortcuts (power user features)
-            }
+            data: keypressData
         });
 
         // Call custom handler if provided - Extensibility Pattern
@@ -477,14 +485,16 @@ export class InteractionService {
             // Emit slider interaction event - Event-Driven Architecture
             // Enables other services to react to timeline position changes
             // Provides structured event data for logging and analytics
+            const sliderData: SankeySliderEventData = {
+                year,       // Selected year value (numeric)
+                value: year // Duplicate for backwards compatibility
+            };
+
             this.eventBus.emit({
                 type: 'interaction.slider',
                 timestamp: Date.now(),
                 source: 'InteractionService',
-                data: {
-                    year,       // Selected year value (numeric)
-                    value: year // Duplicate for backwards compatibility
-                }
+                data: sliderData
             });
 
             // Call custom handler if provided - Extensibility Pattern
@@ -544,14 +554,16 @@ export class InteractionService {
                 // Emit button interaction event - Event-Driven Architecture
                 // Enables other services to react to animation state changes
                 // Note: Action reflects the RESULT of the button press, not the current state
+                const playButtonData: SankeyButtonEventData = {
+                    buttonId: 'evs-play-button',
+                    action: this.animationControlService.isPlaying() ? 'play' : 'pause'
+                };
+
                 this.eventBus.emit({
                     type: 'interaction.button',
                     timestamp: Date.now(),
                     source: 'InteractionService',
-                    data: {
-                        buttonId: 'evs-play-button',
-                        action: this.animationControlService.isPlaying() ? 'play' : 'pause'
-                    }
+                    data: playButtonData
                 });
             };
 
@@ -572,15 +584,17 @@ export class InteractionService {
 
                 // Emit speed change event - Event-Driven Architecture
                 // Enables UI updates (active button state, speed indicator)
+                const speedButtonData: SankeyButtonEventData = {
+                    buttonId: target.id,
+                    action: 'speed-change',
+                    speed // New animation speed in milliseconds
+                };
+
                 this.eventBus.emit({
                     type: 'interaction.button',
                     timestamp: Date.now(),
                     source: 'InteractionService',
-                    data: {
-                        buttonId: target.id,
-                        action: 'speed-change',
-                        speed // New animation speed in milliseconds
-                    }
+                    data: speedButtonData
                 });
             };
 
@@ -704,16 +718,18 @@ export class InteractionService {
 
         // Emit hover event - Event-Driven Architecture
         // Provides rich context for tooltip display, analytics, and custom behavior
+        const hoverData: SankeyElementInteractionEventData = {
+            elementType: element.classList.contains('evs-flow') ? 'flow' : 'box', // Element classification
+            fuel: element.getAttribute('data-fuel'),     // Energy source identification
+            sector: element.getAttribute('data-sector'), // Consumption sector identification
+            mousePosition: {x: event.clientX, y: event.clientY} // Coordinates for tooltip positioning
+        };
+
         this.eventBus.emit({
             type: 'interaction.hover',
             timestamp: Date.now(),
             source: 'InteractionService',
-            data: {
-                elementType: element.classList.contains('evs-flow') ? 'flow' : 'box', // Element classification
-                fuel: element.getAttribute('data-fuel'),     // Energy source identification
-                sector: element.getAttribute('data-sector'), // Consumption sector identification
-                mousePosition: {x: event.clientX, y: event.clientY} // Coordinates for tooltip positioning
-            }
+            data: hoverData
         });
 
         // Call custom handler if provided - Extensibility Pattern
@@ -758,16 +774,18 @@ export class InteractionService {
 
         // Emit click event - Event-Driven Architecture
         // Provides comprehensive click context for analytics, tooltips, and custom behavior
+        const clickData: SankeyElementInteractionEventData = {
+            elementType: element.classList.contains('evs-flow') ? 'flow' : 'box', // Element classification
+            fuel: element.getAttribute('data-fuel'),     // Energy source identification
+            sector: element.getAttribute('data-sector'), // Consumption sector identification
+            mousePosition: {x: event.clientX, y: event.clientY} // Click coordinates for UI positioning
+        };
+
         this.eventBus.emit({
             type: 'interaction.click',
             timestamp: Date.now(),
             source: 'InteractionService',
-            data: {
-                elementType: element.classList.contains('evs-flow') ? 'flow' : 'box', // Element classification
-                fuel: element.getAttribute('data-fuel'),     // Energy source identification
-                sector: element.getAttribute('data-sector'), // Consumption sector identification
-                mousePosition: {x: event.clientX, y: event.clientY} // Click coordinates for UI positioning
-            }
+            data: clickData
         });
 
         // Call custom handler if provided - Extensibility Pattern

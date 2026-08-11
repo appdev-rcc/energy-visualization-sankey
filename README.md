@@ -11,6 +11,7 @@ across historical energy data.
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [API Reference](#api-reference)
+- [Events](#events)
 - [Data Format](#data-format)
 - [Architecture](#architecture)
 - [Development](#development)
@@ -181,6 +182,7 @@ interface SankeyOptions {
     heatBoxY?: number;                 // Heat box position Y (default: 200)
     loopAnimation?: boolean;           // Loop animation (default: false)
     debugLogging?: boolean;            // Enable debug logging (default: false)
+    events?: SankeyEventHandlers;      // Handlers registered before init (see Events)
 }
 ```
 
@@ -212,6 +214,91 @@ interface SankeyOptions {
 #### Development/Testing
 
 - `getDataService(): DataService` - Access internal data service (for testing)
+
+#### Event Subscription
+
+- `on(type, handler): () => void` - Subscribe to an event, returns an unsubscribe function
+- `once(type, handler): () => void` - Subscribe until the first delivery
+- `off(type, handler): this` - Remove every registration of that handler for the event
+- `whenReady(): Promise<SankeyPublicEvent<'system.ready'>>` - Resolve when initialization completes
+
+### Events
+
+Handlers run one microtask after the event is produced, and are error-isolated: a throwing handler cannot break the
+visualization or stop other handlers.
+
+| Event                  | Payload                                        | Notes                                                  |
+|------------------------|------------------------------------------------|--------------------------------------------------------|
+| `system.ready`         | `{totalInitTime, dataPointCount, yearRange}`   | Emitted once, after the first frame renders            |
+| `system.error`         | `{error, context, recoverable}`                | `context` is `'initialization'` or `'data_validation'` |
+| `year.changed`         | `{year, previousYear, yearIndex, isAnimating}` | See the volume note below                              |
+| `animation.started`    | `{isPlaying, currentYear, speed}`              |                                                        |
+| `animation.stopped`    | `{isPlaying, currentYear, speed}`              |                                                        |
+| `speed.changed`        | `{speed}`                                      | Milliseconds per year                                  |
+| `interaction.slider`   | `{year, value}`                                | `value` duplicates `year`                              |
+| `interaction.button`   | `{buttonId, action, speed?}`                   | Discriminated on `action`                              |
+| `interaction.keypress` | `{key, ctrlKey, shiftKey, altKey}`             |                                                        |
+| `interaction.hover`    | `{elementType, fuel, sector, mousePosition}`   | High frequency; debounce before forwarding             |
+| `interaction.click`    | `{elementType, fuel, sector, mousePosition}`   | `fuel` and `sector` may be `null`                      |
+
+```typescript
+const stop = sankey.on('interaction.click', (event) => {
+    console.log(event.data.fuel, event.data.sector);
+});
+
+// Later
+stop();
+```
+
+`event.type` is a discriminant, so a single handler can narrow the payload:
+
+```typescript
+sankey.on('interaction.button', (event) => {
+    switch (event.data.action) {
+        case 'speed-change':
+            console.log(event.data.speed); // narrowed to number
+            break;
+        default:
+            console.log(event.data.action); // 'play' | 'pause'
+    }
+});
+```
+
+#### Lifecycle events and the `events` option
+
+`system.ready` and `system.error` are produced during the asynchronous initialization the constructor starts. The event
+bus drops events that have no subscriber at emit time and there is no replay, so a subscription added after the
+constructor returns can miss them. Register them up front instead:
+
+```typescript
+const sankey = new Sankey('container', {
+    data: energyData,
+    country: 'US',
+    events: {
+        'system.ready': (event) => console.log(`ready in ${event.data.totalInitTime}ms`),
+        'system.error': (event) => console.error(event.data.error)
+    }
+});
+```
+
+When the subscribing code cannot reach the constructor options, use the latch, which resolves even if called long after
+the event fired:
+
+```typescript
+await sankey.whenReady();
+```
+
+`whenReady()` rejects if initialization fails, or if the instance is destroyed before it completes.
+
+#### Event volume
+
+`year.changed` fires once per year while the animation runs, so a full playthrough of a two-century dataset emits a few
+hundred events. Filter on `isAnimating` to separate user scrubbing from automatic playback before forwarding anywhere.
+
+#### Cleanup
+
+`destroy()` removes all subscriptions. Note that an event already in flight when
+`destroy()` is called is still delivered, because dispatch captures its handler set synchronously.
 
 ### Method Chaining
 

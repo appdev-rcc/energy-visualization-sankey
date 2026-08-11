@@ -2,7 +2,14 @@ import * as d3 from 'd3';
 
 // Core event system
 import {EventBus} from '@/core/events/EventBus';
-import type {EventSubscription,} from '@/core/types/events';
+import type {EventHandler, EventSubscription,} from '@/core/types/events';
+import type {
+    SankeyEventListener,
+    SankeyPublicEvent,
+    SankeyPublicEventType,
+    SankeyReadyEventData,
+    SankeyUnsubscribe
+} from '@/core/types/public-events';
 
 // Import shared type definitions
 import type {D3DivSelection, D3SVGSelection, EnergyDataPoint, GraphData, SankeyOptions} from '@/types';
@@ -64,6 +71,19 @@ import {InteractionService} from "@/services/InteractionService";
  * sankey.play().setSpeed(100).setYear(2020);
  * ```
  */
+
+/**
+ * One public subscription.
+ *
+ * `identity` is the handler the caller passed, which is what off() matches on.
+ * The event bus holds a distinct wrapper closure instead - see addListener().
+ */
+interface PublicListenerRecord {
+    readonly type: SankeyPublicEventType;
+    readonly identity: SankeyEventListener<any>;
+    readonly subscription: EventSubscription;
+}
+
 export default class Sankey {
     // CORE EVENT SYSTEM: Central nervous system for all service communication
     // Type-safe event bus enables loose coupling and async communication patterns
@@ -118,6 +138,17 @@ export default class Sankey {
     // Each subscription must be explicitly unsubscribed during destroy()
     private subscriptions: EventSubscription[] = [];
 
+    // PUBLIC SUBSCRIPTION REGISTRY: consumer-facing on()/once() registrations.
+    // Kept separate from `subscriptions` (internal service wiring) so that off()
+    // and destroy() can reason about the two independently.
+    private publicListeners: PublicListenerRecord[] = [];
+
+    // READINESS LATCH: lets callers observe successful initialization even when
+    // they attach after 'system.ready' was emitted and dropped by the event bus.
+    private readonly readyPromise: Promise<SankeyPublicEvent<'system.ready'>>;
+    private resolveReady!: (event: SankeyPublicEvent<'system.ready'>) => void;
+    private rejectReady!: (error: Error) => void;
+
     constructor(containerId: string | HTMLElement, options: SankeyOptions) {
         this.logger = new Logger(options)
         // Initialize core system components
@@ -134,10 +165,26 @@ export default class Sankey {
         // 4. Create core event bus
         this.eventBus = new EventBus(this.logger);
 
-        // 5. Setup system event listeners
+        // 5. Arm the readiness latch before any asynchronous work starts.
+        //    The no-op catch is REQUIRED: without it, a failed initialization
+        //    produces a fresh unhandled rejection for every caller that never
+        //    uses whenReady(), which would be a behaviour change.
+        this.readyPromise = new Promise<SankeyPublicEvent<'system.ready'>>((resolve, reject) => {
+            this.resolveReady = resolve;
+            this.rejectReady = reject;
+        });
+        this.readyPromise.catch(() => { /* observed only through whenReady() */
+        });
+
+        // 6. Setup system event listeners
         this.setupSystemEventListeners();
 
-        // 6. Initialize services and visualization
+        // 7. Register handlers supplied through the `events` option. MUST happen
+        //    before initialize(): the event bus drops events that have no
+        //    subscriber at emit time and there is no replay.
+        this.registerConfiguredEventHandlers();
+
+        // 8. Initialize services and visualization
         this.initialize();
     }
 
@@ -215,36 +262,59 @@ export default class Sankey {
             // Must be created first as other services depend on configuration constants
             this.logger.log('SankeyVisualization: Creating infrastructure services...');
             await this.createConfigurationService();
+            // CANCELLATION CHECK: destroy() empties the service container, so a
+            // destroy() issued while initialization is still in flight would
+            // otherwise leave the remaining layers reading undefined services and
+            // throwing asynchronously, where nothing can catch it. Each await is
+            // a suspension point at which that can happen.
+            if (this.destroyed) {
+                return;
+            }
 
-            // LAYER 2: DATA PROCESSING SERVICES  
+            // LAYER 2: DATA PROCESSING SERVICES
             // Handle input validation, data access, and transformation pipelines
             // Depend on configuration service for validation rules and constants
             this.logger.log('SankeyVisualization: Creating data processing services...');
             await this.createDataServices();
+            if (this.destroyed) {
+                return;
+            }
 
             // LAYER 3: MATHEMATICAL CALCULATION SERVICES
-            // Perform complex energy flow calculations with performance optimizations  
+            // Perform complex energy flow calculations with performance optimizations
             // Depend on data services for input and configuration for mathematical constants
             this.logger.log('SankeyVisualization: Creating calculation services...');
             await this.createCalculationServices();
+            if (this.destroyed) {
+                return;
+            }
 
             // LAYER 4: VISUAL RENDERING SERVICES
             // Generate SVG elements and manage visual output
             // Depend on calculation services for positioning data and configuration for styling
             this.logger.log('SankeyVisualization: Creating rendering services...');
             await this.createRenderingServices();
+            if (this.destroyed) {
+                return;
+            }
 
             // LAYER 5: ANIMATION CONTROL SERVICES
             // Manage timeline navigation and smooth transitions between years
             // Depend on rendering services for visual updates and calculation services for data
             this.logger.log('SankeyVisualization: Creating animation services...');
             await this.createAnimationService();
+            if (this.destroyed) {
+                return;
+            }
 
             // LAYER 6: USER INTERACTION SERVICES
             // Handle mouse, keyboard, and touch events with accessibility support
             // Depend on animation services for playback control and rendering for visual feedback
             this.logger.log('SankeyVisualization: Creating interaction services...');
             await this.createInteractionServices();
+            if (this.destroyed) {
+                return;
+            }
 
             // DOM INITIALIZATION: Create visualization structure in browser
             // Must happen after all services are created as services may reference DOM elements
@@ -255,27 +325,38 @@ export default class Sankey {
             // Triggers the complete data → calculation → render pipeline for the first time
             this.logger.log('SankeyVisualization: Performing initial render...');
             await this.performInitialRender();
+            if (this.destroyed) {
+                return;
+            }
 
             const totalInitializationTime = performance.now() - initializationStartTime;
 
-            // LIFECYCLE EVENT: Signal system fully ready for use
-            // Public API methods are safe to call after this event
-            this.eventBus.emit({
+            const readyData: SankeyReadyEventData = {
+                totalInitTime: totalInitializationTime,
+                dataPointCount: this.options.data.length,
+                yearRange: [
+                    Math.min(...this.options.data.map(d => d.year)),
+                    Math.max(...this.options.data.map(d => d.year))
+                ]
+            };
+
+            const readyEvent: SankeyPublicEvent<'system.ready'> = {
                 type: 'system.ready',
                 timestamp: Date.now(),
                 source: 'SankeyVisualization',
-                data: {
-                    totalInitTime: totalInitializationTime,
-                    dataPointCount: this.options.data.length,
-                    yearRange: [
-                        Math.min(...this.options.data.map(d => d.year)),
-                        Math.max(...this.options.data.map(d => d.year))
-                    ]
-                }
-            });
+                data: readyData
+            };
+
+            // LIFECYCLE EVENT: Signal system fully ready for use
+            // Public API methods are safe to call after this event
+            this.eventBus.emit(readyEvent);
 
             // SYSTEM STATE: Mark initialization complete
             this.initialized = true;
+
+            // Latch readiness so callers that subscribe after this point can
+            // still observe it through whenReady().
+            this.resolveReady(readyEvent);
 
             // PERFORMANCE LOGGING: Track initialization time for regression detection  
             this.logger.log(`SankeyVisualization: Complete initialization in ${totalInitializationTime.toFixed(2)}ms`);
@@ -768,23 +849,113 @@ export default class Sankey {
     }
 
     /**
+     * Register handlers supplied through the `events` constructor option.
+     * Runs before initialize() so that no lifecycle event is dropped.
+     */
+    private registerConfiguredEventHandlers(): void {
+        const configured = this.options.events;
+        if (!configured) {
+            return;
+        }
+
+        (Object.keys(configured) as SankeyPublicEventType[]).forEach(type => {
+            const handler = configured[type] as SankeyEventListener<any> | undefined;
+            if (typeof handler === 'function') {
+                this.addListener(type, handler, handler);
+            }
+        });
+    }
+
+    /**
+     * Shared registration path for on(), once() and the `events` option.
+     *
+     * @param identity what off() matches on - the handler the caller passed
+     * @param invoke   what actually runs, which differs from identity for once()
+     */
+    private addListener(
+        type: SankeyPublicEventType,
+        identity: SankeyEventListener<any>,
+        invoke: SankeyEventListener<any>
+    ): SankeyUnsubscribe {
+        if (typeof identity !== 'function' || typeof invoke !== 'function') {
+            throw new SankeyError(`SankeyVisualization: event handler for '${type}' must be a function`);
+        }
+
+        if (this.destroyed) {
+            console.warn(`SankeyVisualization: cannot subscribe to '${type}' - instance has been destroyed`);
+            return () => { /* no-op */
+            };
+        }
+
+        // HANDLER IDENTITY ISOLATION - do not remove.
+        // EventBus stores handlers in a Set keyed by function identity. Passing
+        // the same function object twice collapses into a single Set entry, and
+        // unsubscribing either subscription would then silently remove BOTH.
+        // Allocating a fresh closure per registration keeps every registration
+        // independently removable. Covered by tests/event-bus.test.ts.
+        const wrapped: EventHandler<any> = (event) => invoke(event as SankeyPublicEvent<any>);
+
+        const record: PublicListenerRecord = {
+            type,
+            identity,
+            subscription: this.eventBus.subscribe<any>(type, wrapped)
+        };
+        this.publicListeners.push(record);
+
+        let alreadyRemoved = false;
+        return () => {
+            if (alreadyRemoved) {
+                return;
+            }
+            alreadyRemoved = true;
+            this.removeListener(record);
+        };
+    }
+
+    /**
+     * Remove a single public subscription and its bus registration
+     */
+    private removeListener(record: PublicListenerRecord): void {
+        const index = this.publicListeners.indexOf(record);
+        if (index === -1) {
+            return;
+        }
+        this.publicListeners.splice(index, 1);
+
+        // After destroy() the bus has already been cleared; unsubscribing again
+        // would only log a spurious "non-existent subscription" warning.
+        if (!this.destroyed) {
+            this.eventBus.unsubscribe(record.subscription);
+        }
+    }
+
+    /**
      * Handle initialization errors
      */
     private handleInitializationError(error: any): void {
-        console.error('SankeyVisualization: Initialization failed:', error);
+        const normalizedError = error instanceof Error ? error : new Error(String(error));
+
+        console.error('SankeyVisualization: Initialization failed:', normalizedError);
 
         this.eventBus.emit({
             type: 'system.error',
             timestamp: Date.now(),
             source: 'SankeyVisualization',
             data: {
-                error: error instanceof Error ? error : new Error(String(error)),
+                error: normalizedError,
                 context: 'initialization',
                 recoverable: false
             },
         });
 
-        // Clean up any partially initialized state
+        // Settle whenReady() with the real cause BEFORE destroy(), which would
+        // otherwise reject first with a generic "destroyed" error and lose it.
+        this.rejectReady(normalizedError);
+
+        // Clean up any partially initialized state.
+        // NOTE: the emit above is already in flight and still delivers. emit()
+        // captures its handler Set synchronously and clear() empties the Map
+        // rather than the captured Sets, so 'system.error' handlers still run.
         this.destroy();
 
         throw error;
@@ -899,6 +1070,86 @@ export default class Sankey {
         return this.initialized;
     }
 
+    // ==================== PUBLIC EVENT API ====================
+
+    /**
+     * Subscribe to a visualization event
+     *
+     * Handlers run asynchronously, one microtask after the event is produced,
+     * and are error-isolated: a throwing handler cannot break the visualization
+     * or prevent other handlers from running.
+     *
+     * LIFECYCLE TIMING: `system.ready` and `system.error` are produced during the
+     * asynchronous initialization the constructor starts. Subscribing in the same
+     * synchronous tick as `new Sankey(...)` is soon enough; subscribing later (for
+     * example after `await nextTick()`) is not. For those, use the `events`
+     * constructor option or {@link whenReady}.
+     *
+     * Registering the same function twice registers it twice and it is called
+     * twice; each call returns its own unsubscribe.
+     *
+     * @returns an unsubscribe function, safe to call more than once
+     */
+    public on<K extends SankeyPublicEventType>(
+        type: K,
+        handler: SankeyEventListener<K>
+    ): SankeyUnsubscribe {
+        const listener = handler as SankeyEventListener<any>;
+        return this.addListener(type, listener, listener);
+    }
+
+    /**
+     * Subscribe until the first delivery, then unsubscribe automatically
+     *
+     * Cancellable either with the returned function or with `off(type, handler)`.
+     */
+    public once<K extends SankeyPublicEventType>(
+        type: K,
+        handler: SankeyEventListener<K>
+    ): SankeyUnsubscribe {
+        let unsubscribe: SankeyUnsubscribe = () => { /* replaced below */
+        };
+
+        const invoke: SankeyEventListener<any> = (event) => {
+            // Remove BEFORE invoking so a throwing handler cannot fire twice.
+            unsubscribe();
+            return (handler as SankeyEventListener<any>)(event);
+        };
+
+        // `handler` is recorded as the identity so that off(type, handler)
+        // cancels a pending once() even though the bus holds `invoke`.
+        unsubscribe = this.addListener(type, handler as SankeyEventListener<any>, invoke);
+        return unsubscribe;
+    }
+
+    /**
+     * Remove every registration of `handler` for `type`, including a pending once()
+     *
+     * Removes all matching registrations rather than one, so teardown code
+     * reliably stops delivery. No-op if the handler was never registered.
+     */
+    public off<K extends SankeyPublicEventType>(
+        type: K,
+        handler: SankeyEventListener<K>
+    ): this {
+        // Snapshot first: removeListener() mutates this.publicListeners.
+        this.publicListeners
+            .filter(record => record.type === type && record.identity === handler)
+            .forEach(record => this.removeListener(record));
+
+        return this;
+    }
+
+    /**
+     * Resolve when initialization completes, or reject if it failed
+     *
+     * Unlike `on('system.ready', ...)` this is a latch: it resolves even when
+     * called long after the event was emitted. Safe to call any number of times.
+     */
+    public whenReady(): Promise<SankeyPublicEvent<'system.ready'>> {
+        return this.readyPromise;
+    }
+
     /**
      * Get array of available years in dataset
      * @returns Readonly array of years available for visualization
@@ -966,6 +1217,10 @@ export default class Sankey {
         this.subscriptions.forEach(sub => this.eventBus.unsubscribe(sub));
         this.subscriptions = [];
 
+        // Release consumer closures. eventBus.clear() below drops the underlying
+        // handlers; this drops our bookkeeping references to them.
+        this.publicListeners = [];
+
         // Clean up event bus
         this.eventBus.clear();
 
@@ -989,6 +1244,12 @@ export default class Sankey {
         this.services = {};
         this.destroyed = true;
         this.initialized = false;
+
+        // Settle whenReady() so callers awaiting an instance that never came up
+        // are not left hanging. No-op once the promise has already settled, so
+        // this is harmless on the happy path. The constructor's no-op catch
+        // prevents an unhandled rejection here.
+        this.rejectReady(new SankeyError('SankeyVisualization: destroyed before initialization completed'));
 
         // Resource cleanup completed successfully
     }
